@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ralph Daren — Full-Stack Developer</title>
+  <meta name="description" content="Ralph Daren — Full-Stack Web Developer specializing in React, Next.js, Node.js, and PostgreSQL. Available for roles and freelance work.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="nav">
+    <a href="#top" class="nav__logo" data-nav>
+      <span class="nav__logo-icon">/</span>
+      <span>ralph<span class="nav__logo-dot">.</span>daren</span>
+    </a>
+    <div class="nav__links">
+      <a href="#about"  class="nav__link" data-nav>about</a>
+      <a href="#skills" class="nav__link" data-nav>skills</a>
+      <a href="#work"   class="nav__link" data-nav>work</a>
+      <a href="#resume" class="nav__cta"  data-nav>résumé ↓</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- ===== HERO ===== -->
+    <section id="top" class="hero">
+
+      <div class="hero__bg-grid"></div>
+      <div class="hero__glow"></div>
+      <div class="hero__scan"></div>
+
+      <!-- Panel switcher -->
+      <div class="hero__switcher">
+        <button class="hero-pill hero-pill--active" data-hero="1">01 terminal</button>
+        <button class="hero-pill" data-hero="2">02 statement</button>
+        <button class="hero-pill" data-hero="3">03 split</button>
+      </div>
+
+      <!-- ---- Panel 1: Terminal ---- -->
+      <div class="hero-panel" data-hero-panel="1">
+        <div class="terminal">
+          <div class="terminal__bar">
+            <span class="terminal__dot terminal__dot--red"></span>
+            <span class="terminal__dot terminal__dot--yellow"></span>
+            <span class="terminal__dot terminal__dot--green"></span>
+            <span class="terminal__title">ralph@portfolio — zsh — 80×24</span>
+          </div>
+          <div class="terminal__body">
+            <div data-reveal data-delay="0">
+              <span class="t-accent">ralph@dev</span><span class="t-dim">:~$ </span><span class="t-text">whoami</span>
+            </div>
+            <div data-reveal data-delay="120" class="t-term">Ralph Daren — Full Stack Web Developer</div>
+            <div data-reveal data-delay="280" class="terminal__body-gap">
+              <span class="t-accent">ralph@dev</span><span class="t-dim">:~$ </span><span class="t-text">cat stack.txt</span>
+            </div>
+            <div data-reveal data-delay="400" class="t-term">HTML · CSS ·JavaScript · React </div>
+            <div data-reveal data-delay="560" class="terminal__body-gap">
+              <span class="t-accent">ralph@dev</span><span class="t-dim">:~$ </span><span class="t-text">./status --hire</span>
+            </div>
+            <div data-reveal data-delay="680" class="t-green">● available for work — open to roles &amp; freelance</div>
+            <div data-reveal data-delay="820" class="terminal__body-caret">
+              <span class="t-accent">ralph@dev</span><span class="t-dim">:~$ </span><span class="terminal__cursor"></span>
+            </div>
+          </div>
+        </div>
+        <div class="hero__actions">
+          <a href="#work"   class="btn btn--primary"   data-nav>view work →</a>
+          <a href="#resume" class="btn btn--secondary"  data-nav>download résumé ↓</a>
+        </div>
+      </div>
+
+      <!-- ---- Panel 2: Statement ---- -->
+      <div class="hero-panel hero-panel--hidden" data-hero-panel="2">
+        <span class="eyebrow">// full-stack web developer</span>
+        <h1 class="hero__statement-name">RALPH<br><span class="t-accent">DAREN</span></h1>
+        <p class="hero__statement-text">I build fast, accessible web applications from database to UI — turning ideas into clean, shippable products.</p>
+        <div class="hero__badge">
+          <span class="hero__badge-dot"></span>available for hire
+        </div>
+        <div class="hero__actions hero__actions--center">
+          <a href="#work"   class="btn btn--primary"  data-nav>view work →</a>
+          <a href="#resume" class="btn btn--secondary" data-nav>download résumé ↓</a>
+        </div>
+        <span class="hero__token hero__token--1">&lt;/&gt;</span>
+        <span class="hero__token hero__token--2">const</span>
+        <span class="hero__token hero__token--3">async () =&gt;</span>
+        <span class="hero__token hero__token--4">{ }</span>
+      </div>
+
+      <!-- ---- Panel 3: Split ---- -->
+      <div class="hero-panel hero-panel--hidden" data-hero-panel="3">
+        <div class="hero__split">
+          <div class="hero__split-text">
+            <span class="eyebrow">// full-stack developer</span>
+            <h1 class="hero__split-name">Hi, I'm<br>Ralph Daren.</h1>
+            <p class="hero__split-desc">A recent Full Stack Developer graduate who builds end-to-end web apps — clean APIs, fast frontends, and databases that scale.</p>
+            <div class="hero__actions">
+              <a href="#work"   class="btn btn--primary"  data-nav>view work →</a>
+              <a href="#resume" class="btn btn--secondary" data-nav>résumé ↓</a>
+            </div>
+          </div>
+          <div class="terminal">
+            <div class="terminal__bar">
+              <span class="terminal__dot terminal__dot--red"></span>
+              <span class="terminal__dot terminal__dot--yellow"></span>
+              <span class="terminal__dot terminal__dot--green"></span>
+              <span class="terminal__title">ralph.config.js</span>
+            </div>
+            <pre class="terminal__code"><span class="t-dim">// developer profile</span>
+              <span class="t-purple">const</span> <span class="t-accent">ralph</span> = {
+                <span class="t-blue">role</span>: <span class="t-green">"Full Stack Developer"</span>,
+                <span class="t-blue">stack</span>: [<span class="t-green">"HTML"</span>, <span class="t-green">"CSS"</span>, <span class="t-green">"React"</span>],
+                <span class="t-blue">graduated</span>: <span class="t-yellow">2026</span>,
+                <span class="t-blue">status</span>: <span class="t-green">"available"</span>,
+                <span class="t-blue">ship</span>: () =&gt; <span class="t-green">"clean code"</span>,
+            };</pre>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section id="about" class="section about">
+      <div class="container">
+        <p class="section-label" data-reveal>// about</p>
+        <div class="about__grid">
+
+          <div class="about__portrait-wrap" data-reveal>
+            <!-- Replace src with your actual portrait path if you move the file -->
+            <img
+              src="professional-portrait.jpeg"
+              alt="Ralph Daren — Full-Stack Developer"
+              class="about__portrait"
+              loading="lazy"
+            >
+          </div>
+
+          <div class="about__content" data-reveal data-delay="120">
+            <h2 class="about__title">Code that ships.<br>Products that last.</h2>
+            <p class="about__text">
+              I'm Ralph Daren, a web developer and recent Full Stack Web Developer graduate. I build fast,
+              accessible applications across the whole stack — designing clean APIs, crafting responsive interfaces,
+              and modeling data that scales. I care about readable code, thoughtful UX, and shipping things that actually get used.
+            </p>
+            <div class="about__meta">
+              <div class="meta-item">
+                <div class="meta-item__label">Education</div>
+                <div class="meta-item__value">Full Stack Web Developer · 2026</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-item__label">Focus</div>
+                <div class="meta-item__value">Full-Stack Web Development</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-item__label">Location</div>
+                <div class="meta-item__value">Winnipeg, MB · Remote / Hybrid</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-item__label">Status</div>
+                <div class="meta-item__value meta-item__value--green">● Open to work</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SKILLS ===== -->
+    <section id="skills" class="section skills">
+      <div class="container">
+        <p class="section-label" data-reveal>// skills</p>
+        <h2 class="section-title" data-reveal>Tech stack &amp; tooling</h2>
+        <p class="section-desc" data-reveal>The tools I reach for to take products from idea to production.</p>
+
+        <div class="skill-bars">
+          <!-- GITHUB-STATS-START -->
+          <div class="skill-bar-row" data-reveal>
+            <div class="skill-bar__header">
+              <span>TypeScript</span>
+              <span class="t-accent">78%</span>
+            </div>
+            <div class="skill-bar__track">
+              <div class="skill-bar__fill" data-level="78%"></div>
+            </div>
+          </div>
+          <div class="skill-bar-row" data-reveal>
+            <div class="skill-bar__header">
+              <span>CSS</span>
+              <span class="t-accent">11%</span>
+            </div>
+            <div class="skill-bar__track">
+              <div class="skill-bar__fill" data-level="11%"></div>
+            </div>
+          </div>
+          <div class="skill-bar-row" data-reveal>
+            <div class="skill-bar__header">
+              <span>HTML</span>
+              <span class="t-accent">9%</span>
+            </div>
+            <div class="skill-bar__track">
+              <div class="skill-bar__fill" data-level="9%"></div>
+            </div>
+          </div>
+          <div class="skill-bar-row" data-reveal>
+            <div class="skill-bar__header">
+              <span>JavaScript</span>
+              <span class="t-accent">2%</span>
+            </div>
+            <div class="skill-bar__track">
+              <div class="skill-bar__fill" data-level="2%"></div>
+            </div>
+          </div>
+          <!-- GITHUB-STATS-END -->
+        </div>
+
+        <div class="skill-cards">
+          <div class="skill-card" data-reveal data-delay="0">
+            <div class="skill-card__label">Frontend</div>
+            <div class="tags">
+              <span class="tag">React</span>
+              <span class="tag">Next.js</span>
+              <span class="tag">TypeScript</span>
+              <span class="tag">Tailwind</span>
+            </div>
+          </div>
+          <div class="skill-card" data-reveal data-delay="80">
+            <div class="skill-card__label">Backend</div>
+            <div class="tags">
+              <span class="tag">Node.js</span>
+              <span class="tag">Express</span>
+              <span class="tag">REST</span>
+              <span class="tag">GraphQL</span>
+              <span class="tag">JWT Auth</span>
+            </div>
+          </div>
+          <div class="skill-card" data-reveal data-delay="160">
+            <div class="skill-card__label">Database</div>
+            <div class="tags">
+              <span class="tag">PostgreSQL</span>
+              <span class="tag">Supabase</span>
+            </div>
+          </div>
+          <div class="skill-card" data-reveal data-delay="240">
+            <div class="skill-card__label">Tooling</div>
+            <div class="tags">
+              <span class="tag">Git</span>
+              <span class="tag">Docker</span>
+              <span class="tag">Vite</span>
+              <span class="tag">Vercel</span>
+              <span class="tag">Figma</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== WORK ===== -->
+    <section id="work" class="section work">
+      <div class="container">
+        <p class="section-label" data-reveal>// selected work</p>
+        <h2 class="section-title" data-reveal>Things I've built</h2>
+
+        <div class="projects">
+
+          <article class="project" data-reveal>
+            <div class="project__screenshot project__carousel" data-carousel>
+              <div class="carousel__track">
+                <img src="assets/mjp-beauty/mjp-01.png" alt="MJP Beauty – slide 1" class="carousel__img">
+                <img src="assets/mjp-beauty/mjp-02.png" alt="MJP Beauty – slide 2" class="carousel__img" loading="lazy">
+                <img src="assets/mjp-beauty/mjp-03.png" alt="MJP Beauty – slide 3" class="carousel__img" loading="lazy">
+                <img src="assets/mjp-beauty/mjp-04.png" alt="MJP Beauty – slide 4" class="carousel__img" loading="lazy">
+                <img src="assets/mjp-beauty/mjp-05.png" alt="MJP Beauty – slide 5" class="carousel__img" loading="lazy">
+                <img src="assets/mjp-beauty/mjp-06.png" alt="MJP Beauty – slide 6" class="carousel__img" loading="lazy">
+                <img src="assets/mjp-beauty/mjp-07.png" alt="MJP Beauty – slide 7" class="carousel__img" loading="lazy">
+                <img src="assets/mjp-beauty/mjp-08.png" alt="MJP Beauty – slide 8" class="carousel__img" loading="lazy">
+              </div>
+              <button class="carousel__btn carousel__btn--prev" aria-label="Previous slide">←</button>
+              <button class="carousel__btn carousel__btn--next" aria-label="Next slide">→</button>
+              <span class="carousel__counter"><span class="carousel__current">1</span> / 8</span>
+            </div>
+            <div class="project__content">
+              <p class="project__num">01</p>
+              <h3 class="project__title">MJP Beauty — Beauty Salon Website with E-commerce</h3>
+              <p class="project__desc">
+                Full-stack booking and e-commerce platform for a beauty academy. Integrates Square for appointment scheduling and payments,
+                Shopify Storefront API for product sales, and Judge.me for customer reviews. Includes online course enrollment, a business mentorship tier,
+                and downloadable freebies.
+              </p>
+              <div class="tags">
+                <span class="tag">React</span>
+                <span class="tag">TypeScript</span>
+                <span class="tag">Shopify Storefront API</span>
+                <span class="tag">Square Booking API</span>
+              </div>
+              <div class="project__links">
+                <a href="#" class="project__link project__link--accent">Live demo ↗</a>
+                <a href="https://github.com/ralphdaren/mjp-beauty" class="project__link">Source ↗</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Reversed: text left, image right -->
+          <article class="project project--reversed" data-reveal data-delay="80">
+            <div class="project__content">
+              <p class="project__num">02</p>
+              <h3 class="project__title">Trendy Films: Story & Wonderland Studios - Photography Portfolio</h3>
+              <p class="project__desc">
+                Cinematic portfolio and booking site for a Winnipeg wedding videography studio. Features a full-screen video-background hero,
+                scroll-reveal animations, an accordion-style services menu, and Cloudinary-hosted film showcases — built entirely using HTML, CSS, and JavaScript.
+              </p>
+              <div class="tags">
+                <span class="tag">HTML</span>
+                <span class="tag">CSS</span>
+                <span class="tag">JavaScript</span>
+              </div>
+              <div class="project__links">
+                <a href="#" class="project__link project__link--accent">Live demo ↗</a>
+                <a href="https://github.com/ralphdaren/trendy-films" class="project__link">Source ↗</a>
+              </div>
+            </div>
+            <div class="project__screenshot project__carousel" data-carousel>
+              <div class="carousel__track">
+                <img src="assets/trendy-films/trendy-01.png" alt="Trendy Films – slide 1" class="carousel__img">
+                <img src="assets/trendy-films/trendy-02.png" alt="Trendy Films – slide 2" class="carousel__img" loading="lazy">
+                <img src="assets/trendy-films/trendy-03.png" alt="Trendy Films – slide 3" class="carousel__img" loading="lazy">
+                <img src="assets/trendy-films/trendy-04.png" alt="Trendy Films – slide 4" class="carousel__img" loading="lazy">
+                <img src="assets/trendy-films/trendy-05.png" alt="Trendy Films – slide 5" class="carousel__img" loading="lazy">
+              </div>
+              <button class="carousel__btn carousel__btn--prev" aria-label="Previous slide">←</button>
+              <button class="carousel__btn carousel__btn--next" aria-label="Next slide">→</button>
+              <span class="carousel__counter"><span class="carousel__current">1</span> / 5</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== RESUME / CONTACT ===== -->
+    <section id="resume" class="section cta-section">
+      <div class="cta-section__glow"></div>
+      <div class="container container--narrow" data-reveal>
+        <span class="section-label">// let's talk</span>
+        <h2 class="cta-section__title">Let's build<br>something great.</h2>
+        <p class="cta-section__text">Open to full-stack roles, internships, and freelance work. Grab my résumé or drop me a line.</p>
+        <div class="hero__actions hero__actions--center">
+          <a href="Ralph%20Daren%20Resume.pdf" download="Ralph Daren Resume.pdf" class="btn btn--primary btn--lg">Download résumé ↓</a>
+          <a href="mailto:aquino.ralphdaren@gmail.com"  class="btn btn--secondary btn--lg">Email me →</a>
+        </div>
+        <div class="social-links">
+          <a href="https://github.com/ralphdaren?tab=overview&from=2026-05-01&to=2026-05-31" class="social-link">GitHub ↗</a>
+          <a href="https://www.linkedin.com/in/ralphdareenn/" class="social-link">LinkedIn ↗</a>
+          <a href="mailto:aquino.ralphdaren@gmail.com" class="social-link">aquino.ralphdaren@gmail.com</a>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /.page -->
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <span>© 2026 Ralph Daren</span>
+    <span>Designed &amp; built from scratch — <span class="t-accent">always shipping.</span></span>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

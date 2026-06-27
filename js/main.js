@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // =========================================================
-  // Hero panel switcher
-  // =========================================================
+  // ---- Hero panel switcher
   const pills  = [...document.querySelectorAll('[data-hero]')];
   const panels = [...document.querySelectorAll('[data-hero-panel]')];
 
@@ -14,15 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
     pills.forEach(p => {
       p.classList.toggle('hero-pill--active', p.dataset.hero === num);
     });
-    // Re-run reveal in case new panel elements haven't been checked yet
     checkReveal();
   }
 
   pills.forEach(p => p.addEventListener('click', () => setActivePanel(p.dataset.hero)));
 
-  // =========================================================
-  // Scroll reveal
-  // =========================================================
+  // ---- Scroll reveal
   function initRevealElement(el, index) {
     const delay = el.dataset.delay !== undefined
       ? Number(el.dataset.delay)
@@ -39,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     el.setAttribute('data-shown', '1');
     el.style.opacity = '1';
     el.style.transform = 'none';
-    // Lock the final state so re-paints never flicker
     setTimeout(() => {
       el.style.transition = 'none';
       el.style.opacity    = '1';
@@ -56,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1300);
   }
 
-  // Initialise hidden state for every reveal element
   document.querySelectorAll('[data-reveal]').forEach(initRevealElement);
 
   function checkReveal() {
@@ -76,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
   checkReveal();
   requestAnimationFrame(checkReveal);
 
-  // Safety fallback: force-reveal anything still hidden after 5 s
   setTimeout(() => {
     document.querySelectorAll('[data-reveal]:not([data-shown])').forEach(reveal);
     document.querySelectorAll('[data-level]:not([data-filled])').forEach(el => {
@@ -84,9 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, 5000);
 
-  // =========================================================
-  // Smooth anchor scroll (offset accounts for fixed nav)
-  // =========================================================
+  // ---- Smooth anchor scroll
   document.querySelectorAll('a[data-nav]').forEach(a => {
     a.addEventListener('click', ev => {
       const href = a.getAttribute('href');
@@ -99,9 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // =========================================================
-  // Project screenshot carousels
-  // =========================================================
+  // ---- Project screenshot carousels
   document.querySelectorAll('[data-carousel]').forEach(carousel => {
     const track   = carousel.querySelector('.carousel__track');
     const imgs    = carousel.querySelectorAll('.carousel__img');

@@ -117,7 +117,6 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
   margin-bottom: 14px;
 }
 
-/* Same visual as section-label but used inside hero panels as eyebrow text */
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 13px;
@@ -141,7 +140,7 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
   margin-bottom: 44px;
 }
 
-/* Inline color utilities used in terminal / code syntax */
+/* Inline color utils */
 .t-accent  { color: var(--accent); }
 .t-dim     { color: var(--text-dim); }
 .t-text    { color: var(--text); }
@@ -289,7 +288,6 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
   overflow: hidden;
 }
 
-/* Animated grid background */
 .hero__bg-grid {
   position: absolute;
   inset: -2px;
@@ -303,7 +301,6 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
           mask-image: radial-gradient(ellipse 80% 65% at 50% 42%, #000 30%, transparent 78%);
 }
 
-/* Glow orb */
 .hero__glow {
   position: absolute;
   top: 18%; left: 50%;
@@ -316,7 +313,6 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
   pointer-events: none;
 }
 
-/* Scanline */
 .hero__scan {
   position: absolute;
   left: 0; right: 0; top: 0;
@@ -328,7 +324,6 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
   pointer-events: none;
 }
 
-/* Panel switcher pills */
 .hero__switcher {
   position: relative;
   z-index: 5;
@@ -357,7 +352,6 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
   border-color: rgba(93,139,255,0.5);
 }
 
-/* Each hero panel */
 .hero-panel {
   position: relative;
   z-index: 4;
@@ -366,7 +360,7 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
 
 .hero-panel--hidden { display: none; }
 
-/* Panel 1 & 2 are centered with a max-width */
+/* Panel 1 & 2  */
 [data-hero-panel="1"] { max-width: 760px;  margin: 0 auto; }
 [data-hero-panel="2"] { max-width: 980px;  margin: 0 auto; text-align: center; }
 [data-hero-panel="3"] { max-width: 1080px; margin: 0 auto; }
@@ -424,7 +418,6 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
   box-shadow: 0 0 10px var(--green);
 }
 
-/* Floating code tokens */
 .hero__token {
   position: absolute;
   font-family: var(--font-mono);
@@ -543,7 +536,6 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
   border-radius: 14px;
 }
 
-/* Accent ring overlay on the portrait */
 .about__portrait-wrap::after {
   content: '';
   position: absolute;
@@ -697,7 +689,6 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
   box-shadow: 0 30px 70px -40px rgba(93,139,255,0.6);
 }
 
-/* In the reversed variant the content column comes first in DOM */
 .project--reversed .project__content { order: -1; }
 
 .project__screenshot {
@@ -898,7 +889,7 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
 }
 
 /* =====================================================
-   RESPONSIVE
+   MOBILE / RESPONSIVE
    ===================================================== */
 @media (max-width: 1024px) {
   .skill-cards  { grid-template-columns: repeat(2, 1fr); }
@@ -923,9 +914,7 @@ button { border: none; background: none; cursor: pointer; font: inherit; }
 }
 
 @media (max-width: 480px) {
-  /* Hide text nav links on very small screens, keep CTA */
   .nav__link { display: none; }
-
   .skill-cards  { grid-template-columns: 1fr; }
   .hero__token  { display: none; }
 }

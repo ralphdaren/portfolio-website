@@ -1,7 +1,5 @@
-#!/usr/bin/env node
 // Run: node scripts/fetch-github-stats.js
-// Fetches language byte counts across all public repos for GITHUB_USERNAME,
-// computes percentages, and updates the skill bars in index.html.
+// Fetches language byte counts across all public repos
 
 const https = require('https');
 const fs = require('fs');
@@ -9,7 +7,7 @@ const path = require('path');
 
 const GITHUB_USERNAME = 'ralphdaren';
 const HTML_PATH = path.join(__dirname, '..', 'index.html');
-const TOP_N = 4;
+const TOP_N = 4;ß
 
 function get(url) {
   return new Promise((resolve, reject) => {

@@ -139,7 +139,7 @@ function initProjects() {
   let tourSeen = false; try { tourSeen = localStorage.getItem(TOUR_KEY) === '1'; } catch (_) {}
   const setTourLabel = done => tourBtn.querySelector('span').textContent = done ? 'Replay tour' : 'Take the tour';
   setTourLabel(tourSeen);
-  tourBtn.addEventListener('click', e => { e.stopPropagation(); projectsTour.start(); });
+  tourBtn.addEventListener('click', e => { e.stopPropagation(); projectsTour.start({ manual: true }); });
   document.addEventListener('tour:start', e => e.detail === 'projects' && setTourLabel(true));
   // after the tour, put the frame back on the screenshot
   document.addEventListener('tour:end', e => e.detail === 'projects' && document.querySelector('#projects .flip button[data-side="front"]').click());
@@ -148,7 +148,8 @@ function initProjects() {
 // ---- Guided tour
 // createTour({ id, steps }) -> { start, stop }. Each step: { target: selector, text, click?: true }.
 // A fake cursor glides to each target, optionally clicks it, and shows a bubble. Any real
-// input from the visitor (mouse movement, scroll, click, key, touch) stops it right away.
+// input from the visitor (mouse movement, scroll, click, key, touch) stops it right away,
+// except mouse movement when the tour was started on purpose (start({ manual: true })).
 function createTour({ id, steps, who = 'Ralph' }) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const cursor = document.createElement('div');
@@ -210,12 +211,16 @@ function createTour({ id, steps, who = 'Ralph' }) {
     stop();
   }
   const events = ['mousemove', 'wheel', 'touchstart', 'keydown', 'pointerdown'];
+  let listening = events;
 
-  async function start() {
+  // start({ manual: true }) is for tours the visitor asked for (e.g. a replay button): they
+  // will naturally move the mouse away from the button, so only scroll/click/key/touch stop it.
+  async function start({ manual = false } = {}) {
     stop();
     const token = ++run; moved = 0; last = null;
+    listening = manual ? events.filter(t => t !== 'mousemove') : events;
     document.dispatchEvent(new CustomEvent('tour:start', { detail: id }));
-    setTimeout(() => alive(token) && events.forEach(t => addEventListener(t, onInput, { passive: true })), 250);
+    setTimeout(() => alive(token) && listening.forEach(t => addEventListener(t, onInput, { passive: true })), 250);
     place(innerWidth * 0.72, innerHeight * 0.88, 0);
     cursor.classList.add('on');
     try {
@@ -245,7 +250,7 @@ function createTour({ id, steps, who = 'Ralph' }) {
   function stop() {
     run = 0;
     cursor.classList.remove('on'); bubble.classList.remove('on');
-    events.forEach(t => removeEventListener(t, onInput));
+    listening.forEach(t => removeEventListener(t, onInput));
   }
   return { start, stop };
 }

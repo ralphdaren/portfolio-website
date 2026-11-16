@@ -334,6 +334,99 @@ main { padding-left: var(--nav-w); }
 }
 
 /* ==========================================================================
+   Projects: pick a project, flip between "Visitors see" and "Runs underneath"
+   ========================================================================== */
+.sec__head--row { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+/* Screenshots are full landing-page captures (~2.28:1). The frame keeps that exact ratio,
+   so the whole width and height of each hero is shown, never cropped. */
+#projects { --ratio: 2.28; --frame-w: min(100%, calc((100svh - 330px) * var(--ratio))); }
+.work { display: grid; grid-template-columns: minmax(220px, 3fr) 9fr; gap: clamp(28px, 4vw, 56px); align-items: start; }
+.plist { display: flex; flex-direction: column; }
+.plist button { all: unset; cursor: pointer; display: grid; grid-template-columns: 28px 1fr; gap: 2px 10px; padding: 16px 0; border-top: 1px solid var(--bg-deep); }
+.plist button:last-of-type { border-bottom: 1px solid var(--bg-deep); }
+.plist__n { font: 400 12px/2 var(--mono); color: var(--text-soft); grid-row: span 2; }
+.plist b { font-weight: 600; font-size: 1.25rem; letter-spacing: -0.025em; color: #B9B3A8; transition: color .2s; }
+.plist small { font: 400 11.5px var(--mono); color: var(--text-soft); display: flex; align-items: center; gap: 7px; }
+.plist button:hover b { color: var(--text-soft); }
+.plist button[aria-selected="true"] b { color: var(--text); }
+.plist button[aria-selected="true"] .plist__n { color: var(--accent); }
+.status { width: 6px; height: 6px; border-radius: 50%; background: #3E9B63; flex: none; }
+.status--wip { background: #D49A2A; }
+.plist__links { display: flex; gap: 18px; margin-top: 20px; }
+.plink { font: 500 12.5px var(--mono); color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+.plink:hover { color: var(--text); }
+
+.viewer { width: var(--frame-w); justify-self: end; }
+.viewer__bar { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin-bottom: 10px; }
+.flip { display: flex; border: 1px solid var(--text); border-radius: 8px; overflow: hidden; }
+.flip button { font: 500 12px var(--mono); border: 0; padding: 8px 14px; background: transparent; color: var(--text); cursor: pointer; }
+.flip button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+.viewer__url { font: 400 12px var(--mono); color: var(--text-soft); }
+.frame { position: relative; aspect-ratio: var(--ratio); border: 1px solid var(--bg-deep); background: var(--bg-deep); overflow: hidden; transition: border-color .45s, background-color .45s; }
+/* diagram side: no border or panel, so it reads as printed straight onto the page */
+.frame[data-side="back"] { border-color: transparent; background-color: transparent; }
+.frame__face { position: absolute; inset: 0; transition: opacity .45s var(--ease); }
+.frame__front img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.frame__back { display: grid; place-items: center; padding: 24px; }
+.frame__back::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(#DCD7CE 1px, transparent 1px); background-size: 18px 18px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 45%, transparent 85%); mask-image: radial-gradient(ellipse at center, #000 45%, transparent 85%); }
+.frame__back svg { position: relative; }
+.frame[data-side="front"] .frame__back, .frame[data-side="back"] .frame__front { opacity: 0; pointer-events: none; }
+.frame__back svg { width: 100%; height: 100%; }
+#projects [hidden] { display: none !important; }
+
+.dg-node rect { fill: var(--surface); stroke: var(--text); stroke-width: 1.2; }
+.dg-node--core rect { fill: var(--accent); stroke: var(--accent); }
+.dg-node--core text { fill: var(--bg); }
+.dg-node--ghost rect { fill: transparent; stroke: var(--text-soft); stroke-dasharray: 4 4; }
+.dg text { font-family: var(--font); font-size: 14px; font-weight: 500; fill: var(--text); }
+.dg text.sub { font-family: var(--mono); font-size: 10.5px; font-weight: 400; fill: var(--text-soft); }
+.dg-node--core text.sub { fill: #C9D3E4; }
+.dg path.flow { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 6; animation: flow 1.2s linear infinite; }
+.dg text.lbl { font-family: var(--mono); font-size: 10.5px; fill: var(--accent); font-weight: 400; }
+@keyframes flow { to { stroke-dashoffset: -22; } }
+
+@media (max-width: 960px) {
+  #projects { --frame-w: 100%; }
+  .work { grid-template-columns: 1fr; }
+  .viewer { justify-self: stretch; }
+  .viewer__url { display: none; }
+}
+
+.plist button:focus-visible, .flip button:focus-visible, .tour-btn:focus-visible, .plink:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.plink[hidden] { display: none; }
+
+/* ==========================================================================
+   Guided tour (reusable: any section can define its own stops in main.js)
+   ========================================================================== */
+.tour-btn { display: inline-flex; align-items: center; gap: 8px; font: 500 12px var(--mono); padding: 8px 14px; border: 1px solid var(--text); border-radius: 8px; background: transparent; color: var(--text); cursor: pointer; transition: background .2s, color .2s; }
+.tour-btn:hover { background: var(--text); color: var(--bg); }
+.tour-btn svg { width: 10px; height: 10px; fill: currentColor; }
+.tour-cursor { position: fixed; left: 0; top: 0; z-index: 100; width: 26px; height: 26px; pointer-events: none; opacity: 0; transition: opacity .3s; will-change: transform; filter: drop-shadow(0 3px 6px rgba(30,30,30,.25)); }
+.tour-cursor.on { opacity: 1; }
+.tour-cursor svg { width: 100%; height: 100%; display: block; transition: transform .12s var(--ease); transform-origin: 4px 3px; }
+.tour-cursor.press svg { transform: scale(.82); }
+.tour-ripple { position: fixed; z-index: 99; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 2px solid var(--accent); border-radius: 50%; pointer-events: none; animation: tour-ripple .6s var(--ease) forwards; }
+@keyframes tour-ripple { from { transform: scale(.3); opacity: 1; } to { transform: scale(1.4); opacity: 0; } }
+/* chat-style bubble: rounded, with the corner nearest the cursor tucked in like a message tail */
+.tour-bubble { position: fixed; left: auto; top: 0; z-index: 100; max-width: 280px; padding: 10px 15px 11px; background: var(--text); color: var(--bg); border-radius: 20px 20px 20px 20px; border-top-left-radius: 5px; pointer-events: none; opacity: 0; transform: translateY(6px) scale(.9); transform-origin: top left; transition: opacity .25s, transform .4s cubic-bezier(.34,1.56,.64,1); box-shadow: 0 12px 30px rgba(30,30,30,.22); }
+.tour-bubble.flip-x { border-top-left-radius: 20px; border-top-right-radius: 5px; transform-origin: top right; }
+.tour-bubble.on { opacity: 1; transform: none; }
+.tour-bubble__who { display: block; font: 500 11px var(--mono); color: #9AAED0; margin-bottom: 2px; }
+.tour-bubble__text { font-size: 14px; line-height: 1.5; font-weight: 500; }
+.tour-bubble__dots { display: none; gap: 4px; padding: 6px 2px 4px; }
+.tour-bubble.typing .tour-bubble__dots { display: flex; }
+.tour-bubble.typing .tour-bubble__text { display: none; }
+.tour-bubble__dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--bg); opacity: .4; animation: tour-dot 1s infinite; }
+.tour-bubble__dots i:nth-child(2) { animation-delay: .15s; }
+.tour-bubble__dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes tour-dot { 0%, 60%, 100% { transform: none; opacity: .4; } 30% { transform: translateY(-4px); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .tour-cursor { transition: none; }
+  .tour-ripple { display: none; }
+}
+
+/* ==========================================================================
    "Coming soon" placeholder sections
    ========================================================================== */
 .soon {

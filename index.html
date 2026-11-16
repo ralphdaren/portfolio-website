@@ -139,10 +139,78 @@
       </div>
     </section>
 
-    <section id="projects" class="soon">
-      <p class="soon__num">03</p>
-      <h2 class="soon__title">Projects</h2>
-      <p class="soon__badge">Coming soon</p>
+    <!-- ===== PROJECTS ===== -->
+    <section id="projects" class="sec">
+      <div class="wrap">
+        <div class="sec__head sec__head--row">
+          <div>
+            <p class="sec__num"><b>03</b> / projects</p>
+            <h2 class="sec__title">Built and <em>building.</em></h2>
+          </div>
+          <button type="button" class="tour-btn"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z"/></svg><span>Take the tour</span></button>
+        </div>
+
+        <div class="work">
+          <div>
+            <div class="plist" role="tablist">
+              <button type="button" role="tab" aria-selected="true" data-p="mjp" data-url="mjpbeauty.com" data-live="https://www.mjpbeauty.com/" data-code="https://github.com/ralphdaren/mjp-beauty">
+                <span class="plist__n">01</span><b>MJP Beauty</b>
+                <small><span class="status"></span>studio + academy · live</small>
+              </button>
+              <button type="button" role="tab" aria-selected="false" data-p="tf" data-url="" data-live="" data-code="https://github.com/ralphdaren/trendy-films">
+                <span class="plist__n">02</span><b>Trendy Films</b>
+                <small><span class="status"></span>wedding films</small>
+              </button>
+            </div>
+            <div class="plist__links"><a class="plink plink--live" href="https://www.mjpbeauty.com/" target="_blank" rel="noopener">Visit site ↗</a><a class="plink plink--code" href="https://github.com/ralphdaren/mjp-beauty" target="_blank" rel="noopener">Code ↗</a></div>
+          </div>
+
+          <div class="viewer">
+            <div class="viewer__bar">
+              <div class="flip">
+                <button type="button" data-side="front" aria-pressed="true">Visitors see</button>
+                <button type="button" data-side="back" aria-pressed="false">Runs underneath</button>
+              </div>
+              <span class="viewer__url">mjpbeauty.com</span>
+            </div>
+
+            <div class="frame" data-side="front">
+              <div class="frame__face frame__front">
+                <img data-p="mjp" src="assets/mjp-beauty/mjp-beauty.png" alt="MJP Beauty landing page" width="1912" height="840" loading="lazy">
+                <img data-p="tf" src="assets/trendy-films/trendy-films.png" alt="Trendy Films landing page" width="1917" height="840" loading="lazy" hidden>
+              </div>
+
+              <div class="frame__face frame__back">
+                <svg class="dg" data-p="mjp" viewBox="0 0 640 340" role="img" aria-label="Visitor uses the React site, which talks to Square, Shopify and Judge.me">
+                  <path class="flow" d="M118 170 H 214"/>
+                  <path class="flow" d="M376 170 C 420 170, 420 60, 462 60"/>
+                  <path class="flow" d="M376 170 H 462"/>
+                  <path class="flow" d="M376 170 C 420 170, 420 280, 462 280"/>
+                  <text class="lbl" x="404" y="96">book + pay</text>
+                  <text class="lbl" x="414" y="162">buy</text>
+                  <text class="lbl" x="404" y="252">reviews</text>
+                  <g class="dg-node"><rect x="16" y="144" width="102" height="52"/><text x="67" y="175" text-anchor="middle">Visitor</text></g>
+                  <g class="dg-node dg-node--core"><rect x="214" y="132" width="162" height="76"/><text x="295" y="166" text-anchor="middle">mjpbeauty.com</text><text class="sub" x="295" y="186" text-anchor="middle">React + TypeScript</text></g>
+                  <g class="dg-node"><rect x="462" y="30" width="162" height="60"/><text x="543" y="56" text-anchor="middle">Square</text><text class="sub" x="543" y="74" text-anchor="middle">bookings, payments</text></g>
+                  <g class="dg-node"><rect x="462" y="140" width="162" height="60"/><text x="543" y="166" text-anchor="middle">Shopify</text><text class="sub" x="543" y="184" text-anchor="middle">Storefront API</text></g>
+                  <g class="dg-node"><rect x="462" y="250" width="162" height="60"/><text x="543" y="276" text-anchor="middle">Judge.me</text><text class="sub" x="543" y="294" text-anchor="middle">customer reviews</text></g>
+                </svg>
+                <svg class="dg" data-p="tf" viewBox="0 0 640 340" role="img" aria-label="Visitor loads a plain HTML site that streams films from Cloudinary" hidden>
+                  <path class="flow" d="M118 140 H 214"/>
+                  <path class="flow" d="M376 140 H 462"/>
+                  <text class="lbl" x="419" y="130" text-anchor="middle">stream films</text>
+                  <g class="dg-node"><rect x="16" y="114" width="102" height="52"/><text x="67" y="145" text-anchor="middle">Visitor</text></g>
+                  <g class="dg-node dg-node--core"><rect x="214" y="102" width="162" height="76"/><text x="295" y="136" text-anchor="middle">Trendy Films</text><text class="sub" x="295" y="156" text-anchor="middle">HTML · CSS · JS</text></g>
+                  <g class="dg-node"><rect x="462" y="110" width="162" height="60"/><text x="543" y="136" text-anchor="middle">Cloudinary</text><text class="sub" x="543" y="154" text-anchor="middle">video hero, films</text></g>
+                  <g class="dg-node dg-node--ghost"><rect x="194" y="230" width="202" height="60"/><text x="295" y="256" text-anchor="middle">No framework</text><text class="sub" x="295" y="274" text-anchor="middle">no build step, on purpose</text></g>
+                  <path d="M295 178 V 230" fill="none" stroke="var(--text-soft)" stroke-dasharray="3 4"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </section>
 
     <section id="stack" class="soon">

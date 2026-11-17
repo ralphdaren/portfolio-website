@@ -20,7 +20,7 @@
    * Guided tour: a fake cursor glides to each step's target, optionally clicks it, and shows a chat bubble.
    * Once started it plays to the end: mouse, touch and scrolling within the section don't stop it (the cursor
    * and bubble follow their target when the page scrolls). It ends when the visitor leaves the section
-   * (e.g. a nav link), presses Esc, or uses the "End tour" button on the step bar.
+   * (e.g. a nav link), presses Esc, or uses "Stop tour" (the section button or the step bar).
    *
    * @param {{ id: string, steps: { target: string, text: string, click?: boolean }[], section?: Element, who?: string }} options
    * @returns {{ start: () => Promise<void>, stop: () => void }}
@@ -49,7 +49,7 @@
 
     const bar = document.createElement('div');
     bar.className = 'tour-bar';
-    bar.innerHTML = '<span class="tour-bar__step"></span><button type="button" class="tour-bar__end">End tour</button>';
+    bar.innerHTML = '<span class="tour-bar__step"></span><button type="button" class="tour-bar__end">Stop tour</button>';
     const barStep = bar.querySelector('.tour-bar__step');
     bar.querySelector('button').addEventListener('click', () => stop());
     document.body.append(cursor, bubble, live, bar);
@@ -199,7 +199,7 @@
         }
         await sleep(200, token);
         stop();
-      } catch { /* stopped early (End tour, Esc, left the section, or another tour took over) */ }
+      } catch { /* stopped early (Stop tour, Esc, left the section, or another tour took over) */ }
     }
 
     function stop() {
@@ -224,8 +224,8 @@
 
   /**
    * Wires a section's tour. It never autoplays: the section's `.tour-btn` starts it. The first time a visitor
-   * reaches the section, a spotlight dims the page and highlights that button with a Skip option (once per section).
-   * The button reads "Take the tour" until the tour has been taken, then "Replay tour".
+   * reaches the section, a spotlight dims the page and highlights that button with "Take the tour" / "Skip tour" (once per section).
+   * The button reads "Take the tour", "Stop tour" while playing (clicking it stops), then "Replay tour".
    * `?tour=reset` in the URL forgets both.
    * @param {{ section: Element, id: string, steps: object[], onEnd?: () => void }} options
    */
@@ -238,15 +238,27 @@
 
     const btn = section.querySelector('.tour-btn');
     if (btn) {
-      const setLabel = seen => { btn.querySelector('span').textContent = seen ? 'Replay tour' : 'Take the tour'; };
-      setLabel(storage.get(seenKey) === '1');
-      btn.addEventListener('click', e => { e.stopPropagation(); closeSpotlight(); tour.start(); });
+      // "Take the tour" → "Stop tour" while it plays → "Replay tour" once it ends (→ "Stop tour" again on replay)
+      const icon = btn.querySelector('svg path');
+      const setState = state => {
+        const playing = state === 'playing';
+        btn.querySelector('span').textContent = playing ? 'Stop tour' : state === 'seen' ? 'Replay tour' : 'Take the tour';
+        icon.setAttribute('d', playing ? 'M2 2h6v6H2z' : 'M2 1l7 4-7 4z');
+        btn.classList.toggle('is-playing', playing);
+      };
+      setState(storage.get(seenKey) === '1' ? 'seen' : 'new');
+      const begin = () => { closeSpotlight(); tour.start(); };
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (active === tour) tour.stop(); else begin();
+      });
       document.addEventListener('tour:start', e => {
         if (e.detail !== id) return;
         storage.set(seenKey, '1');
-        setLabel(true);
+        setState('playing');
       });
-      if (storage.get(seenKey) !== '1' && storage.get(introKey) !== '1') spotlightOnce(section, btn, introKey);
+      document.addEventListener('tour:end', e => e.detail === id && setState('seen'));
+      if (storage.get(seenKey) !== '1' && storage.get(introKey) !== '1') spotlightOnce(section, btn, introKey, begin);
     }
     if (onEnd) document.addEventListener('tour:end', e => e.detail === id && onEnd());
     return tour;
@@ -257,7 +269,7 @@
 
   // Shows the spotlight once, when the section is mostly on screen and scrolling has settled.
   // Waits for its next visit if a tour or another spotlight is showing at that moment.
-  function spotlightOnce(section, btn, introKey) {
+  function spotlightOnce(section, btn, introKey, begin) {
     // "mostly on screen": 60%, or less when the section is taller than the screen (e.g. stacked on a phone)
     const threshold = Math.min(0.6, (innerHeight / Math.max(section.offsetHeight, 1)) * 0.8);
     let timer;
@@ -268,22 +280,24 @@
         if (active || spot) return;
         io.disconnect();
         storage.set(introKey, '1');
-        openSpotlight(btn);
+        openSpotlight(btn, begin);
       }, 700);
     }, { threshold });
     io.observe(section);
   }
 
-  // Dims the page and lifts the tour button above it, with a small card offering Skip.
+  // Dims the page and lifts the tour button above it, with a small card offering "Take the tour" or "Skip tour".
   // Never blocks scrolling; Skip, Esc, a click on the dimmed area, or scrolling the button away all close it.
-  function openSpotlight(btn) {
+  function openSpotlight(btn, begin) {
     const dim = document.createElement('div');
     dim.className = 'tour-dim';
     const card = document.createElement('div');
     card.className = 'tour-callout';
     card.setAttribute('role', 'dialog');
     card.setAttribute('aria-label', 'Section tour');
-    card.innerHTML = '<p>New here? Take a quick tour of this section.</p><button type="button" class="tour-callout__skip">Skip</button>';
+    card.innerHTML = '<p>New here? Take a quick tour of this section.</p>'
+      + '<div class="tour-callout__actions"><button type="button" class="tour-callout__take">Take the tour</button>'
+      + '<button type="button" class="tour-callout__skip">Skip tour</button></div>';
     document.body.append(dim, card);
     btn.classList.add('is-spotlit');
 
@@ -295,7 +309,8 @@
     };
     place();
     requestAnimationFrame(() => { dim.classList.add('on'); card.classList.add('on'); });
-    btn.focus({ preventScroll: true });
+    const take = card.querySelector('.tour-callout__take');
+    take.focus({ preventScroll: true });
 
     const away = new IntersectionObserver(([e]) => { if (!e.isIntersecting) close(); });
     away.observe(btn);
@@ -304,7 +319,8 @@
     addEventListener('resize', place, { passive: true });
     addEventListener('keydown', onKey);
     dim.addEventListener('click', close);
-    card.querySelector('button').addEventListener('click', close);
+    card.querySelector('.tour-callout__skip').addEventListener('click', close);
+    take.addEventListener('click', begin); // begin() closes the spotlight first
 
     function close() {
       if (spot !== self) return;

@@ -35,7 +35,13 @@ src/
   utils/
     storage.js              localStorage wrapper that never throws
 mockups/                    design mockups (git-ignored)
+vercel.json                 serves the project root (see Deploy)
 ```
+
+## Deploy
+
+Hosted on Vercel with no build step. `vercel.json` sets the output directory to the project root;
+without it, Vercel treats `public/` as the whole site and the homepage returns 404.
 
 ## Adding a section
 

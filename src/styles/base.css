@@ -1,6 +1,8 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; }
+/* sections lock into place: scrolling always comes to rest at the start of a section (see layout.css).
+   A section taller than the screen (stacked on phones) still scrolls freely inside, and locks at its edges. */
+html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 body {

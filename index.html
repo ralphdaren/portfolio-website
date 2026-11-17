@@ -9,11 +9,9 @@
   <link rel="icon" href="public/icons/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="icon" href="public/icons/icon-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="public/icons/apple-touch-icon.png">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="src/styles/index.css">
 </head>
 <body>
@@ -42,6 +40,12 @@
         <a href="#stack">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2.5 9 4.75-9 4.75-9-4.75 9-4.75Z"/><path d="m3 12 9 4.75L21 12"/><path d="m3 16.5 9 4.75 9-4.75"/></svg>
           <span class="sidenav__label">Stack</span>
+        </a>
+      </li>
+      <li>
+        <a href="#gear">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4" width="19" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+          <span class="sidenav__label">Gear</span>
         </a>
       </li>
       <li>
@@ -294,14 +298,39 @@
       </div>
     </section>
 
+    <section id="gear" class="sec">
+      <div class="wrap">
+        <div class="sec__head sec__head--row">
+          <div>
+            <p class="sec__num"><b>05</b> / gear</p>
+            <h2 class="sec__title">What's on <em>my desk.</em></h2>
+          </div>
+          <div class="gear__intro">
+            <p class="sec__lede">The setup I code, game and unwind on at home. Click a dot to see what it is.</p>
+            <button type="button" class="tour-btn"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1l7 4-7 4z"/></svg><span>Take the tour</span></button>
+          </div>
+        </div>
+
+        <div class="gear">
+          <!-- dots are added by src/components/Gear/Gear.js from gearData.js -->
+          <div class="desk">
+            <img src="public/images/gear/desk.jpg" alt="Ralph's desk: three screens in front of a backlit pegboard, two keyboards, two mice and a closed MacBook" width="1600" height="1200" loading="lazy">
+          </div>
+          <div class="gear__panel" id="gear-detail" aria-live="polite">
+            <div class="gear__body"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="certifications" class="soon">
-      <p class="soon__num">05</p>
+      <p class="soon__num">06</p>
       <h2 class="soon__title">Certifications</h2>
       <p class="soon__badge">Coming soon</p>
     </section>
 
     <section id="contact" class="soon">
-      <p class="soon__num">06</p>
+      <p class="soon__num">07</p>
       <h2 class="soon__title">Contact</h2>
       <p class="soon__badge">Coming soon</p>
     </section>

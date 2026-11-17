@@ -128,6 +128,28 @@ export function createTour({ id, steps, who = 'Ralph' }) {
   return { start, stop };
 }
 
+/**
+ * Wires a section's tour: autoplays once per visitor, and the section's `.tour-btn`
+ * reads "Take the tour" / "Replay tour" and replays it. `?tour=reset` in the URL forgets it was seen.
+ * @param {{ section: Element, id: string, steps: object[], onEnd?: () => void }} options
+ */
+export function initSectionTour({ section, id, steps, onEnd }) {
+  const key = `tour-seen:${id}`;
+  const tour = createTour({ id, steps });
+  if (new URLSearchParams(location.search).get('tour') === 'reset') storage.remove(key);
+  autoplayOnce(section, tour, key);
+
+  const btn = section.querySelector('.tour-btn');
+  if (btn) {
+    const setLabel = seen => { btn.querySelector('span').textContent = seen ? 'Replay tour' : 'Take the tour'; };
+    setLabel(storage.get(key) === '1');
+    btn.addEventListener('click', e => { e.stopPropagation(); tour.start({ manual: true }); });
+    document.addEventListener('tour:start', e => e.detail === id && setLabel(true));
+  }
+  if (onEnd) document.addEventListener('tour:end', e => e.detail === id && onEnd());
+  return tour;
+}
+
 // Plays a tour once per visitor, when its section is mostly on screen and scrolling has settled.
 // Skipped on touch devices, where the fake cursor makes no sense.
 export function autoplayOnce(section, tour, key) {

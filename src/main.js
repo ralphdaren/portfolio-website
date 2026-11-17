@@ -3,9 +3,11 @@ import { initHero } from './components/Hero/Hero.js';
 import { initAbout } from './components/About/About.js';
 import { initProjects } from './components/Projects/Projects.js';
 import { initStack } from './components/Stack/Stack.js';
+import { initGear } from './components/Gear/Gear.js';
 
 initSideNav();
 initHero();
 initAbout();
 initProjects();
 initStack();
+initGear();

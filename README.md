@@ -20,7 +20,7 @@ index.html                  page markup, one <section> per component
 public/                     static files, linked as-is
   favicon.ico
   icons/                    favicon + home-screen icons
-  images/                   hero, about and project screenshots
+  images/                   hero, about, project screenshots, gear/ (desk photo + product PNGs)
   ralph-daren-resume.pdf
 src/
   main.js                   entry: imports each component and starts it
@@ -51,5 +51,11 @@ without it, Vercel treats `public/` as the whole site and the homepage returns 4
 
 ## Guided tour
 
-`src/components/Tour/Tour.js` exports `createTour({ id, steps })` and `autoplayOnce(section, tour, key)`.
-See `src/components/Projects/Projects.js` for an example. Add `?tour=reset` to the URL to see a first-visit tour again.
+Give the section a `.tour-btn` and call `initSectionTour({ section, id, steps, onEnd })` from
+`src/components/Tour/Tour.js`: it autoplays once per visitor and wires the Take / Replay tour button.
+See `Projects.js` or `Gear.js` for examples. Add `?tour=reset` to the URL to see the first-visit tours again.
+
+## Gear
+
+Items live in `src/components/Gear/gearData.js` (name, specs, link, product image, and the dot's x / y position
+on the desk photo in %). Product images are transparent PNGs in `public/images/gear/`, about 520px tall.

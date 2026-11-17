@@ -1,7 +1,4 @@
-import { createTour, autoplayOnce } from '../Tour/Tour.js';
-import { storage } from '../../utils/storage.js';
-
-const TOUR_KEY = 'tour-seen:projects';
+import { initSectionTour } from '../Tour/Tour.js';
 
 const TOUR_STEPS = [
   { target: '#projects .plist button:nth-of-type(2)', text: 'Pick any project from this list.' },
@@ -34,22 +31,10 @@ export function initProjects() {
     flips.forEach(x => x.setAttribute('aria-pressed', x === b));
   }));
 
-  initProjectsTour(section);
+  initSectionTour({
+    section, id: 'projects', steps: TOUR_STEPS,
+    // put the frame back on the screenshot once the tour finishes
+    onEnd: () => section.querySelector('.flip button[data-side="front"]').click(),
+  });
 }
 
-function initProjectsTour(section) {
-  const tour = createTour({ id: 'projects', steps: TOUR_STEPS });
-
-  // ?tour=reset replays the first-visit autoplay
-  if (new URLSearchParams(location.search).get('tour') === 'reset') storage.remove(TOUR_KEY);
-  autoplayOnce(section, tour, TOUR_KEY);
-
-  const btn = section.querySelector('.tour-btn');
-  const setLabel = seen => { btn.querySelector('span').textContent = seen ? 'Replay tour' : 'Take the tour'; };
-  setLabel(storage.get(TOUR_KEY) === '1');
-  btn.addEventListener('click', e => { e.stopPropagation(); tour.start({ manual: true }); });
-
-  document.addEventListener('tour:start', e => e.detail === 'projects' && setLabel(true));
-  // put the frame back on the screenshot once the tour finishes
-  document.addEventListener('tour:end', e => e.detail === 'projects' && section.querySelector('.flip button[data-side="front"]').click());
-}

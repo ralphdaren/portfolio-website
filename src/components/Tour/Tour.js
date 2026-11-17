@@ -151,51 +151,104 @@
   }
 
   /**
-   * Wires a section's tour: autoplays once per visitor, and the section's `.tour-btn`
-   * reads "Take the tour" / "Replay tour" and replays it. `?tour=reset` in the URL forgets it was seen.
+   * Wires a section's tour. It never autoplays: the section's `.tour-btn` starts it. The first time a visitor
+   * reaches the section, a spotlight dims the page and highlights that button with a Skip option (once per section).
+   * The button reads "Take the tour" until the tour has been taken, then "Replay tour".
+   * `?tour=reset` in the URL forgets both.
    * @param {{ section: Element, id: string, steps: object[], onEnd?: () => void }} options
    */
   function initSectionTour({ section, id, steps, onEnd }) {
-    const key = `tour-seen:${id}`;
+    // the tour was taken from its button (named 'taken', not 'seen', so flags left by the old autoplay don't count)
+    const seenKey = `tour-taken:${id}`;
+    const introKey = `tour-intro:${id}`; // the spotlight was shown
     const tour = createTour({ id, steps });
-    if (new URLSearchParams(location.search).get('tour') === 'reset') storage.remove(key);
-    autoplayOnce(section, tour, key);
+    if (new URLSearchParams(location.search).get('tour') === 'reset') { storage.remove(seenKey); storage.remove(introKey); }
 
     const btn = section.querySelector('.tour-btn');
     if (btn) {
       const setLabel = seen => { btn.querySelector('span').textContent = seen ? 'Replay tour' : 'Take the tour'; };
-      setLabel(storage.get(key) === '1');
-      btn.addEventListener('click', e => { e.stopPropagation(); tour.start(); });
-      document.addEventListener('tour:start', e => e.detail === id && setLabel(true));
+      setLabel(storage.get(seenKey) === '1');
+      btn.addEventListener('click', e => { e.stopPropagation(); closeSpotlight(); tour.start(); });
+      document.addEventListener('tour:start', e => {
+        if (e.detail !== id) return;
+        storage.set(seenKey, '1');
+        setLabel(true);
+      });
+      if (storage.get(seenKey) !== '1' && storage.get(introKey) !== '1') spotlightOnce(section, btn, introKey);
     }
     if (onEnd) document.addEventListener('tour:end', e => e.detail === id && onEnd());
     return tour;
   }
 
-  // Plays a tour once per visitor (desktop, phone or tablet), when its section is mostly on screen
-  // and scrolling has settled. If another tour is still playing, it waits for that one to finish first.
-  function autoplayOnce(section, tour, key) {
-    if (storage.get(key) === '1') return;
+  let spot = null; // the spotlight currently showing
+  const closeSpotlight = () => spot && spot.close();
+
+  // Shows the spotlight once, when the section is mostly on screen and scrolling has settled.
+  // Waits for its next visit if a tour or another spotlight is showing at that moment.
+  function spotlightOnce(section, btn, introKey) {
     // "mostly on screen": 60%, or less when the section is taller than the screen (e.g. stacked on a phone)
     const threshold = Math.min(0.6, (innerHeight / Math.max(section.offsetHeight, 1)) * 0.8);
-    let visible = false, timer;
+    let timer;
     const io = new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting;
       clearTimeout(timer);
-      if (visible) timer = setTimeout(tryStart, 900);
+      if (!e.isIntersecting) return;
+      timer = setTimeout(() => {
+        if (active || spot) return;
+        io.disconnect();
+        storage.set(introKey, '1');
+        openSpotlight(btn);
+      }, 700);
     }, { threshold });
-    function tryStart() {
-      if (!visible) return;
-      if (active) {
-        document.addEventListener('tour:end', () => { clearTimeout(timer); timer = setTimeout(tryStart, 600); }, { once: true });
-        return;
-      }
-      io.disconnect();
-      storage.set(key, '1');
-      tour.start();
-    }
     io.observe(section);
   }
 
-  Object.assign(Site, { createTour, initSectionTour, autoplayOnce });
+  // Dims the page and lifts the tour button above it, with a small card offering Skip.
+  // Never blocks scrolling; Skip, Esc, a click on the dimmed area, or scrolling the button away all close it.
+  function openSpotlight(btn) {
+    const dim = document.createElement('div');
+    dim.className = 'tour-dim';
+    const card = document.createElement('div');
+    card.className = 'tour-callout';
+    card.setAttribute('role', 'dialog');
+    card.setAttribute('aria-label', 'Section tour');
+    card.innerHTML = '<p>New here? Take a quick tour of this section.</p><button type="button" class="tour-callout__skip">Skip</button>';
+    document.body.append(dim, card);
+    btn.classList.add('is-spotlit');
+
+    const place = () => {
+      const r = btn.getBoundingClientRect();
+      const w = card.offsetWidth;
+      card.style.top = `${r.bottom + 12}px`;
+      card.style.left = `${Math.max(12, Math.min(r.right - w, innerWidth - w - 12))}px`;
+    };
+    place();
+    requestAnimationFrame(() => { dim.classList.add('on'); card.classList.add('on'); });
+    btn.focus({ preventScroll: true });
+
+    const away = new IntersectionObserver(([e]) => { if (!e.isIntersecting) close(); });
+    away.observe(btn);
+    const onKey = e => { if (e.key === 'Escape') close(); };
+    addEventListener('scroll', place, { passive: true });
+    addEventListener('resize', place, { passive: true });
+    addEventListener('keydown', onKey);
+    dim.addEventListener('click', close);
+    card.querySelector('button').addEventListener('click', close);
+
+    function close() {
+      if (spot !== self) return;
+      spot = null;
+      away.disconnect();
+      removeEventListener('scroll', place);
+      removeEventListener('resize', place);
+      removeEventListener('keydown', onKey);
+      btn.classList.remove('is-spotlit');
+      dim.classList.remove('on');
+      card.classList.remove('on');
+      setTimeout(() => { dim.remove(); card.remove(); }, 300);
+    }
+    const self = { close };
+    spot = self;
+  }
+
+  Object.assign(Site, { createTour, initSectionTour });
 })(window.Site = window.Site || {});

@@ -58,12 +58,15 @@ without it, Vercel treats `public/` as the whole site and the homepage returns 4
 ## Guided tour
 
 Give the section a `.tour-btn` and call `initSectionTour({ section, id, steps, onEnd })` from
-`src/components/Tour/Tour.js`: it autoplays once per visitor and wires the Take / Replay tour button.
-See `Projects.js` or `Gear.js` for examples. Add `?tour=reset` to the URL to see the first-visit tours again.
-Once a tour starts it always plays to the end (mouse, touch and scrolling don't stop it; Esc does), and only one
-tour plays at a time: a section's autoplay waits for the current tour to finish. Tours autoplay on phones and tablets too;
-each step scrolls its target into view first. Synthetic clicks from a tour have `event.isTrusted === false`, so a
-component can tell them apart from real taps (Gear uses this to skip its tap-to-scroll during a tour).
+`src/components/Tour/Tour.js` (see `Projects.js` or `Gear.js`).
+
+- Tours never autoplay. The button starts them and reads "Take the tour" until taken, then "Replay tour".
+- The first time a visitor reaches the section, a spotlight dims the page and highlights the button, with a Skip
+  option. It shows once per section and never blocks scrolling (Skip, Esc, a click outside, or scrolling away close it).
+- Once started, a tour plays to the end: mouse, touch and scrolling don't stop it (Esc does). Each step scrolls its
+  target into view, and only one tour plays at a time.
+- Synthetic clicks from a tour have `event.isTrusted === false`, so a component can tell them apart from real taps.
+- Add `?tour=reset` to the URL to forget what was seen and see the spotlights again.
 
 ## Gear
 

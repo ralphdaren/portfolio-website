@@ -5,14 +5,15 @@
 
   /**
    * Guided tour: a fake cursor glides to each step's target, optionally clicks it, and shows a chat bubble.
-   * Once started it plays to the end: mouse, touch and scrolling don't stop it (the cursor and bubble
-   * follow their target when the page scrolls). Esc is the only way out, for keyboard users.
+   * Once started it plays to the end: mouse, touch and scrolling within the section don't stop it (the cursor
+   * and bubble follow their target when the page scrolls). It ends quietly when the visitor leaves the
+   * section entirely (e.g. a nav link), instead of scrolling them back to it. Esc also ends it.
    *
-   * @param {{ id: string, steps: { target: string, text: string, click?: boolean }[], who?: string }} options
+   * @param {{ id: string, steps: { target: string, text: string, click?: boolean }[], section?: Element, who?: string }} options
    * @returns {{ start: () => Promise<void>, stop: () => void }}
    * Fires `tour:start` and `tour:end` on document (the latter also when stopped early), with the tour id as `detail`.
    */
-  function createTour({ id, steps, who = 'Ralph' }) {
+  function createTour({ id, steps, section, who = 'Ralph' }) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const cursor = document.createElement('div');
@@ -29,7 +30,7 @@
     document.body.append(cursor, bubble);
 
     // `run` is a token: each start() bumps it, and pending sleeps reject once it changes
-    let run = 0, x = 0, y = 0, target = null;
+    let run = 0, x = 0, y = 0, target = null, left = null;
     const alive = token => token === run;
     const sleep = (ms, token) => new Promise((ok, no) => setTimeout(() => alive(token) ? ok() : no('stopped'), ms));
     const pointOn = el => {
@@ -98,6 +99,11 @@
       addEventListener('scroll', follow, { passive: true });
       addEventListener('resize', follow, { passive: true });
       addEventListener('keydown', onKey);
+      // the visitor left the section (nav link, or scrolled it fully off screen): end, don't pull them back
+      if (section) {
+        left = new IntersectionObserver(([e]) => { if (!e.isIntersecting) stop(); });
+        left.observe(section);
+      }
       document.dispatchEvent(new CustomEvent('tour:start', { detail: id }));
       place(innerWidth * 0.72, innerHeight * 0.88, 0);
       cursor.classList.add('on');
@@ -143,6 +149,7 @@
       removeEventListener('scroll', follow);
       removeEventListener('resize', follow);
       removeEventListener('keydown', onKey);
+      if (left) { left.disconnect(); left = null; }
       if (wasRunning) document.dispatchEvent(new CustomEvent('tour:end', { detail: id }));
     }
 
@@ -161,7 +168,7 @@
     // the tour was taken from its button (named 'taken', not 'seen', so flags left by the old autoplay don't count)
     const seenKey = `tour-taken:${id}`;
     const introKey = `tour-intro:${id}`; // the spotlight was shown
-    const tour = createTour({ id, steps });
+    const tour = createTour({ id, steps, section });
     if (new URLSearchParams(location.search).get('tour') === 'reset') { storage.remove(seenKey); storage.remove(introKey); }
 
     const btn = section.querySelector('.tour-btn');

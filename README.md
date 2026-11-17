@@ -63,7 +63,8 @@ Give the section a `.tour-btn` and call `initSectionTour({ section, id, steps, o
 - Tours never autoplay. The button starts them and reads "Take the tour" until taken, then "Replay tour".
 - The first time a visitor reaches the section, a spotlight dims the page and highlights the button, with a Skip
   option. It shows once per section and never blocks scrolling (Skip, Esc, a click outside, or scrolling away close it).
-- Once started, a tour plays to the end: mouse, touch and scrolling don't stop it (Esc does). Each step scrolls its
+- Once started, a tour plays to the end: mouse, touch and scrolling within the section don't stop it. It ends if the
+  visitor leaves the section (nav link, or scrolling it fully off screen) or presses Esc. Each step scrolls its
   target into view, and only one tour plays at a time.
 - Synthetic clicks from a tour have `event.isTrusted === false`, so a component can tell them apart from real taps.
 - Add `?tour=reset` to the URL to forget what was seen and see the spotlights again.

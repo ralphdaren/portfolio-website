@@ -1,13 +1,10 @@
-import { initSideNav } from './components/SideNav/SideNav.js';
-import { initHero } from './components/Hero/Hero.js';
-import { initAbout } from './components/About/About.js';
-import { initProjects } from './components/Projects/Projects.js';
-import { initStack } from './components/Stack/Stack.js';
-import { initGear } from './components/Gear/Gear.js';
-
-initSideNav();
-initHero();
-initAbout();
-initProjects();
-initStack();
-initGear();
+// Entry point. Every file in src/ is a plain script that adds what it shares to window.Site,
+// so the page also works when opened straight from disk (file://). Load order is set in index.html.
+(function (Site) {
+  Site.initSideNav();
+  Site.initHero();
+  Site.initAbout();
+  Site.initProjects();
+  Site.initStack();
+  Site.initGear();
+})(window.Site);

@@ -337,6 +337,17 @@
 
   </main>
 
-  <script type="module" src="src/main.js"></script>
+  <!-- Plain scripts (not modules) so the page also works when opened from disk.
+       Order matters: shared helpers first, then components, then main.js which starts them. -->
+  <script src="src/utils/storage.js" defer></script>
+  <script src="src/components/Tour/Tour.js" defer></script>
+  <script src="src/components/SideNav/SideNav.js" defer></script>
+  <script src="src/components/Hero/Hero.js" defer></script>
+  <script src="src/components/About/About.js" defer></script>
+  <script src="src/components/Projects/Projects.js" defer></script>
+  <script src="src/components/Stack/Stack.js" defer></script>
+  <script src="src/components/Gear/gearData.js" defer></script>
+  <script src="src/components/Gear/Gear.js" defer></script>
+  <script src="src/main.js" defer></script>
 </body>
 </html>

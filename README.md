@@ -29,7 +29,6 @@ src/
   components/
     <Name>/<Name>.css       styles for that section only
     <Name>/<Name>.js        adds Site.init<Name>(), if the section needs JS
-    SectionSnap/            page-wide: one wheel gesture = one section
   utils/
     storage.js              localStorage wrapper that never throws
 mockups/                    design mockups (git-ignored)
@@ -55,13 +54,6 @@ without it, Vercel treats `public/` as the whole site and the homepage returns 4
    ```
    Add a `<script src="src/components/Name/Name.js" defer>` tag to `index.html` before `main.js`
    (after any file it uses), then call `Site.initName()` in `src/main.js`.
-
-## Section snapping
-
-Scrolling locks onto each section on every screen size. CSS does most of it (`scroll-snap-type` on `html` in
-`base.css`, `scroll-snap-align` on `main > section` in `layout.css`), which covers touch and keyboard.
-`src/components/SectionSnap/SectionSnap.js` adds the mouse-wheel / trackpad part: one gesture moves exactly one
-section. A section taller than the screen (stacked on phones) scrolls freely inside and moves on at its edges.
 
 ## Guided tour
 

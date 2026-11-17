@@ -1,5 +1,4 @@
 main { padding-left: var(--nav-w); }
-main > section { scroll-snap-align: start; }
 @media (max-width: 768px) { main { padding-left: 0; padding-bottom: 88px; } }
 
 .sec { padding: 112px 24px; border-top: 1px solid var(--bg-deep); }

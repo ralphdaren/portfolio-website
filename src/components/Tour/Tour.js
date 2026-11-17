@@ -3,11 +3,24 @@
 
   let active = null; // the tour currently playing, so two never overlap
 
+  const MARGIN = 12; // bubble and step bar stay at least this far inside the screen
+
+  // Elements marked data-tour-avoid (the mobile bottom nav) that sit in the lower half of the screen:
+  // the bubble and step bar stay above them.
+  function bottomLimit() {
+    let limit = innerHeight - MARGIN;
+    document.querySelectorAll('[data-tour-avoid]').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.height && r.top > innerHeight / 2) limit = Math.min(limit, r.top - 8);
+    });
+    return limit;
+  }
+
   /**
    * Guided tour: a fake cursor glides to each step's target, optionally clicks it, and shows a chat bubble.
    * Once started it plays to the end: mouse, touch and scrolling within the section don't stop it (the cursor
-   * and bubble follow their target when the page scrolls). It ends quietly when the visitor leaves the
-   * section entirely (e.g. a nav link), instead of scrolling them back to it. Esc also ends it.
+   * and bubble follow their target when the page scrolls). It ends when the visitor leaves the section
+   * (e.g. a nav link), presses Esc, or uses the "End tour" button on the step bar.
    *
    * @param {{ id: string, steps: { target: string, text: string, click?: boolean }[], section?: Element, who?: string }} options
    * @returns {{ start: () => Promise<void>, stop: () => void }}
@@ -21,22 +34,43 @@
     cursor.setAttribute('aria-hidden', 'true');
     cursor.innerHTML = '<svg viewBox="0 0 26 26"><path d="M4 3l17 9.5-7.4 1.7-3.6 6.8z" fill="#1E1E1E" stroke="#FDFCF9" stroke-width="1.6" stroke-linejoin="round"/></svg>';
 
+    // the bubble is visual only (it types letter by letter); screen readers get each message once via `live`
     const bubble = document.createElement('div');
     bubble.className = 'tour-bubble';
-    bubble.setAttribute('role', 'status');
-    bubble.setAttribute('aria-live', 'polite');
+    bubble.setAttribute('aria-hidden', 'true');
     bubble.innerHTML = '<span class="tour-bubble__who"></span><span class="tour-bubble__dots"><i></i><i></i><i></i></span><span class="tour-bubble__text"></span>';
     bubble.querySelector('.tour-bubble__who').textContent = who;
-    document.body.append(cursor, bubble);
+    const out = bubble.querySelector('.tour-bubble__text');
+
+    const live = document.createElement('p');
+    live.className = 'tour-sr';
+    live.setAttribute('role', 'status');
+    live.setAttribute('aria-live', 'polite');
+
+    const bar = document.createElement('div');
+    bar.className = 'tour-bar';
+    bar.innerHTML = '<span class="tour-bar__step"></span><button type="button" class="tour-bar__end">End tour</button>';
+    const barStep = bar.querySelector('.tour-bar__step');
+    bar.querySelector('button').addEventListener('click', () => stop());
+    document.body.append(cursor, bubble, live, bar);
 
     // `run` is a token: each start() bumps it, and pending sleeps reject once it changes
-    let run = 0, x = 0, y = 0, target = null, left = null;
+    let run = 0, x = 0, y = 0, target = null, left = null, message = '';
     const alive = token => token === run;
     const sleep = (ms, token) => new Promise((ok, no) => setTimeout(() => alive(token) ? ok() : no('stopped'), ms));
     const pointOn = el => {
       const r = el.getBoundingClientRect();
       return [r.left + Math.min(r.width * 0.55, 140), r.top + r.height * 0.6];
     };
+    // waits until the page has stopped scrolling (smooth scrolls take longer on long distances)
+    async function scrollSettled(token) {
+      let last = -1, still = 0;
+      for (let i = 0; i < 40 && still < 3; i++) {
+        await sleep(50, token);
+        still = scrollY === last ? still + 1 : 0;
+        last = scrollY;
+      }
+    }
 
     function place(nx, ny, ms) {
       cursor.style.transition = `opacity .3s, transform ${reduce ? 0 : ms}ms cubic-bezier(.65,0,.35,1)`;
@@ -44,22 +78,37 @@
       x = nx; y = ny;
     }
 
-    // Placed from the finished message, so the bubble grows away from the cursor while typing.
+    // Sized from the full message and fixed while it types, so it never resizes or covers the cursor.
+    // Prefers below-right of the cursor; flips left, then centres, when there's no room; goes above the
+    // cursor when there's no room below; always stays inside the screen and above the mobile nav.
     function positionBubble() {
+      const shown = out.textContent;
+      out.textContent = message;
+      Object.assign(bubble.style, { width: '', minHeight: '', left: '0px', top: '0px', maxWidth: `${Math.min(280, innerWidth - MARGIN * 2)}px` });
       const w = bubble.offsetWidth, h = bubble.offsetHeight;
-      const flip = x + 22 + w > innerWidth - 12;
-      bubble.classList.toggle('flip-x', flip);
-      bubble.style.left = flip ? 'auto' : x + 22 + 'px';
-      bubble.style.right = flip ? innerWidth - x + 6 + 'px' : 'auto';
-      bubble.style.top = Math.min(y + 26, innerHeight - h - 12) + 'px';
+      out.textContent = shown;
+
+      let side = 'right', bx = x + 22;
+      if (bx + w > innerWidth - MARGIN) { side = 'left'; bx = x - 6 - w; }
+      if (bx < MARGIN) { side = 'center'; bx = Math.min(Math.max(x - w / 2, MARGIN), innerWidth - MARGIN - w); }
+      const low = floor();
+      // below if it fits; otherwise above, unless there's even less room above
+      let by = y + 26, above = false;
+      if (by + h > low && y - 12 - MARGIN > low - by) { above = true; by = y - h - 12; }
+      by = Math.min(Math.max(by, MARGIN), low - h);
+
+      bubble.classList.toggle('flip-x', side === 'left');
+      bubble.classList.toggle('center', side === 'center');
+      bubble.classList.toggle('above', above);
+      Object.assign(bubble.style, { left: `${bx}px`, top: `${by}px`, width: `${w}px`, minHeight: `${h}px` });
     }
 
     async function showBubble(text, token) {
-      const out = bubble.querySelector('.tour-bubble__text');
+      message = text;
+      live.textContent = text;
       bubble.classList.remove('on', 'typing');
-      out.textContent = text;
-      positionBubble();
       out.textContent = '';
+      positionBubble();
       bubble.classList.add('typing');
       requestAnimationFrame(() => bubble.classList.add('on'));
       if (reduce) { bubble.classList.remove('typing'); out.textContent = text; return; }
@@ -81,9 +130,17 @@
       setTimeout(() => r.remove(), 700);
     }
 
+    function placeBar() {
+      bar.style.bottom = `${innerHeight - bottomLimit()}px`;
+    }
+    // lowest point the bubble / step targets may use: above the mobile nav and the step bar
+    const floor = () => Math.min(bottomLimit(), bar.classList.contains('on') ? bar.getBoundingClientRect().top - 8 : Infinity);
+
     // the cursor is position: fixed, so keep it (and the bubble) on the target while the page scrolls
     function follow() {
-      if (!run || !target) return;
+      if (!run) return;
+      placeBar();
+      if (!target) return;
       const [tx, ty] = pointOn(target);
       place(tx, ty, 0);
       if (bubble.classList.contains('on')) positionBubble();
@@ -105,23 +162,29 @@
         left.observe(section);
       }
       document.dispatchEvent(new CustomEvent('tour:start', { detail: id }));
-      place(innerWidth * 0.72, innerHeight * 0.88, 0);
+      const shown = steps.filter(s => document.querySelector(s.target)?.getClientRects().length);
+      placeBar();
+      bar.classList.add('on');
+      place(innerWidth * 0.72, Math.min(innerHeight * 0.88, bottomLimit() - 30), 0);
       cursor.classList.add('on');
       try {
         await sleep(350, token);
-        for (const step of steps) {
+        for (const [n, step] of shown.entries()) {
           const el = document.querySelector(step.target);
-          if (!el || !el.getClientRects().length) continue; // missing or hidden: skip
-          target = el;
-          // on small screens the next step is often below the fold: bring it into view first
+          if (!el || !el.getClientRects().length) continue; // hidden since the tour started: skip
+          barStep.textContent = `Step ${n + 1} of ${shown.length}`;
+          bubble.classList.remove('on');
+          // on small screens the next step is often below the fold: bring it into view first.
+          // `target` still points at the previous step here, so the cursor rides along with the page
+          // while it scrolls, then glides to the new step (instead of jumping straight onto it).
           const box = el.getBoundingClientRect();
-          if (box.top < 0 || box.bottom > innerHeight) {
+          if (box.top < 0 || box.bottom > floor()) {
             el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
-            await sleep(reduce ? 50 : 650, token);
+            await scrollSettled(token);
           }
+          target = el;
           const [tx, ty] = pointOn(el);
           const ms = Math.max(500, Math.min(1100, Math.hypot(tx - x, ty - y) * 1.3));
-          bubble.classList.remove('on');
           place(tx, ty, ms);
           await sleep((reduce ? 0 : ms) + 120, token);
           if (step.click) {
@@ -136,7 +199,7 @@
         }
         await sleep(200, token);
         stop();
-      } catch { /* stopped early (Esc, or another tour took over) */ }
+      } catch { /* stopped early (End tour, Esc, left the section, or another tour took over) */ }
     }
 
     function stop() {
@@ -146,6 +209,8 @@
       if (active === api) active = null;
       cursor.classList.remove('on');
       bubble.classList.remove('on');
+      bar.classList.remove('on');
+      live.textContent = '';
       removeEventListener('scroll', follow);
       removeEventListener('resize', follow);
       removeEventListener('keydown', onKey);

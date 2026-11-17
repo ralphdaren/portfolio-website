@@ -351,7 +351,6 @@ main { padding-left: var(--nav-w); }
 .plist button[aria-selected="true"] b { color: var(--text); }
 .plist button[aria-selected="true"] .plist__n { color: var(--accent); }
 .status { width: 6px; height: 6px; border-radius: 50%; background: #3E9B63; flex: none; }
-.status--wip { background: #D49A2A; }
 .plist__links { display: flex; gap: 18px; margin-top: 20px; }
 .plink { font: 500 12.5px var(--mono); color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
 .plink:hover { color: var(--text); }

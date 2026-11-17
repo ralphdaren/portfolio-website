@@ -1,16 +1,16 @@
 (function (Site) {
   const { storage } = Site;
 
-  const INPUT_EVENTS = ['mousemove', 'wheel', 'touchstart', 'keydown', 'pointerdown'];
+  let active = null; // the tour currently playing, so two never overlap
 
   /**
    * Guided tour: a fake cursor glides to each step's target, optionally clicks it, and shows a chat bubble.
-   * Real visitor input stops it; a tour started with { manual: true } (e.g. from a replay button)
-   * ignores mouse movement, since the visitor naturally moves away from the button they clicked.
+   * Once started it plays to the end: mouse, touch and scrolling don't stop it (the cursor and bubble
+   * follow their target when the page scrolls). Esc is the only way out, for keyboard users.
    *
    * @param {{ id: string, steps: { target: string, text: string, click?: boolean }[], who?: string }} options
-   * @returns {{ start: (opts?: { manual?: boolean }) => Promise<void>, stop: () => void }}
-   * Fires `tour:start` and `tour:end` on document, with the tour id as `detail`.
+   * @returns {{ start: () => Promise<void>, stop: () => void }}
+   * Fires `tour:start` and `tour:end` on document (the latter also when stopped early), with the tour id as `detail`.
    */
   function createTour({ id, steps, who = 'Ralph' }) {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -29,10 +29,13 @@
     document.body.append(cursor, bubble);
 
     // `run` is a token: each start() bumps it, and pending sleeps reject once it changes
-    let run = 0, x = 0, y = 0, moved = 0, last = null;
-    let listening = INPUT_EVENTS;
+    let run = 0, x = 0, y = 0, target = null;
     const alive = token => token === run;
     const sleep = (ms, token) => new Promise((ok, no) => setTimeout(() => alive(token) ? ok() : no('stopped'), ms));
+    const pointOn = el => {
+      const r = el.getBoundingClientRect();
+      return [r.left + Math.min(r.width * 0.55, 140), r.top + r.height * 0.6];
+    };
 
     function place(nx, ny, ms) {
       cursor.style.transition = `opacity .3s, transform ${reduce ? 0 : ms}ms cubic-bezier(.65,0,.35,1)`;
@@ -40,17 +43,21 @@
       x = nx; y = ny;
     }
 
-    // Positioned from the finished message, so the bubble grows away from the cursor while typing.
-    async function showBubble(text, token) {
-      const out = bubble.querySelector('.tour-bubble__text');
-      bubble.classList.remove('on', 'typing');
-      out.textContent = text;
+    // Placed from the finished message, so the bubble grows away from the cursor while typing.
+    function positionBubble() {
       const w = bubble.offsetWidth, h = bubble.offsetHeight;
       const flip = x + 22 + w > innerWidth - 12;
       bubble.classList.toggle('flip-x', flip);
       bubble.style.left = flip ? 'auto' : x + 22 + 'px';
       bubble.style.right = flip ? innerWidth - x + 6 + 'px' : 'auto';
       bubble.style.top = Math.min(y + 26, innerHeight - h - 12) + 'px';
+    }
+
+    async function showBubble(text, token) {
+      const out = bubble.querySelector('.tour-bubble__text');
+      bubble.classList.remove('on', 'typing');
+      out.textContent = text;
+      positionBubble();
       out.textContent = '';
       bubble.classList.add('typing');
       requestAnimationFrame(() => bubble.classList.add('on'));
@@ -73,23 +80,25 @@
       setTimeout(() => r.remove(), 700);
     }
 
-    // the tour's own el.click() calls aren't `isTrusted`, so they don't stop it
-    function onInput(e) {
-      if (!e.isTrusted || !run) return;
-      if (e.type === 'mousemove') {
-        if (last) moved += Math.hypot(e.clientX - last[0], e.clientY - last[1]);
-        last = [e.clientX, e.clientY];
-        if (moved < 30) return;
-      }
-      stop();
+    // the cursor is position: fixed, so keep it (and the bubble) on the target while the page scrolls
+    function follow() {
+      if (!run || !target) return;
+      const [tx, ty] = pointOn(target);
+      place(tx, ty, 0);
+      if (bubble.classList.contains('on')) positionBubble();
     }
+    const onKey = e => { if (e.key === 'Escape') stop(); };
 
-    async function start({ manual = false } = {}) {
+    async function start() {
+      if (active && active !== api) active.stop();
       stop();
-      const token = ++run; moved = 0; last = null;
-      listening = manual ? INPUT_EVENTS.filter(t => t !== 'mousemove') : INPUT_EVENTS;
+      active = api;
+      const token = ++run;
+      target = null;
+      addEventListener('scroll', follow, { passive: true });
+      addEventListener('resize', follow, { passive: true });
+      addEventListener('keydown', onKey);
       document.dispatchEvent(new CustomEvent('tour:start', { detail: id }));
-      setTimeout(() => alive(token) && listening.forEach(t => addEventListener(t, onInput, { passive: true })), 250);
       place(innerWidth * 0.72, innerHeight * 0.88, 0);
       cursor.classList.add('on');
       try {
@@ -97,8 +106,14 @@
         for (const step of steps) {
           const el = document.querySelector(step.target);
           if (!el || !el.getClientRects().length) continue; // missing or hidden: skip
-          const r = el.getBoundingClientRect();
-          const tx = r.left + Math.min(r.width * 0.55, 140), ty = r.top + r.height * 0.6;
+          target = el;
+          // on small screens the next step is often below the fold: bring it into view first
+          const box = el.getBoundingClientRect();
+          if (box.top < 0 || box.bottom > innerHeight) {
+            el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
+            await sleep(reduce ? 50 : 650, token);
+          }
+          const [tx, ty] = pointOn(el);
           const ms = Math.max(500, Math.min(1100, Math.hypot(tx - x, ty - y) * 1.3));
           bubble.classList.remove('on');
           place(tx, ty, ms);
@@ -115,18 +130,24 @@
         }
         await sleep(200, token);
         stop();
-        document.dispatchEvent(new CustomEvent('tour:end', { detail: id }));
-      } catch { /* stopped by the visitor */ }
+      } catch { /* stopped early (Esc, or another tour took over) */ }
     }
 
     function stop() {
+      const wasRunning = run !== 0;
       run = 0;
+      target = null;
+      if (active === api) active = null;
       cursor.classList.remove('on');
       bubble.classList.remove('on');
-      listening.forEach(t => removeEventListener(t, onInput));
+      removeEventListener('scroll', follow);
+      removeEventListener('resize', follow);
+      removeEventListener('keydown', onKey);
+      if (wasRunning) document.dispatchEvent(new CustomEvent('tour:end', { detail: id }));
     }
 
-    return { start, stop };
+    const api = { start, stop };
+    return api;
   }
 
   /**
@@ -144,27 +165,35 @@
     if (btn) {
       const setLabel = seen => { btn.querySelector('span').textContent = seen ? 'Replay tour' : 'Take the tour'; };
       setLabel(storage.get(key) === '1');
-      btn.addEventListener('click', e => { e.stopPropagation(); tour.start({ manual: true }); });
+      btn.addEventListener('click', e => { e.stopPropagation(); tour.start(); });
       document.addEventListener('tour:start', e => e.detail === id && setLabel(true));
     }
     if (onEnd) document.addEventListener('tour:end', e => e.detail === id && onEnd());
     return tour;
   }
 
-  // Plays a tour once per visitor, when its section is mostly on screen and scrolling has settled.
-  // Skipped on touch devices, where the fake cursor makes no sense.
+  // Plays a tour once per visitor (desktop, phone or tablet), when its section is mostly on screen
+  // and scrolling has settled. If another tour is still playing, it waits for that one to finish first.
   function autoplayOnce(section, tour, key) {
-    if (storage.get(key) === '1' || matchMedia('(pointer: coarse)').matches) return;
-    let timer;
+    if (storage.get(key) === '1') return;
+    // "mostly on screen": 60%, or less when the section is taller than the screen (e.g. stacked on a phone)
+    const threshold = Math.min(0.6, (innerHeight / Math.max(section.offsetHeight, 1)) * 0.8);
+    let visible = false, timer;
     const io = new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
       clearTimeout(timer);
-      if (!e.isIntersecting) return;
-      timer = setTimeout(() => {
-        io.disconnect();
-        storage.set(key, '1');
-        tour.start();
-      }, 900);
-    }, { threshold: 0.6 });
+      if (visible) timer = setTimeout(tryStart, 900);
+    }, { threshold });
+    function tryStart() {
+      if (!visible) return;
+      if (active) {
+        document.addEventListener('tour:end', () => { clearTimeout(timer); timer = setTimeout(tryStart, 600); }, { once: true });
+        return;
+      }
+      io.disconnect();
+      storage.set(key, '1');
+      tour.start();
+    }
     io.observe(section);
   }
 

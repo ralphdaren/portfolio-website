@@ -1,0 +1,56 @@
+/* frame keeps the screenshots' exact ratio so they are never cropped */
+#projects { --ratio: 2.28; --frame-w: min(100%, calc((100svh - 330px) * var(--ratio))); }
+.work { display: grid; grid-template-columns: minmax(220px, 3fr) 9fr; gap: clamp(28px, 4vw, 56px); align-items: start; }
+.plist { display: flex; flex-direction: column; }
+.plist button { all: unset; cursor: pointer; display: grid; grid-template-columns: 28px 1fr; gap: 2px 10px; padding: 16px 0; border-top: 1px solid var(--bg-deep); }
+.plist button:last-of-type { border-bottom: 1px solid var(--bg-deep); }
+.plist__n { font: 400 12px/2 var(--mono); color: var(--text-soft); grid-row: span 2; }
+.plist b { font-weight: 600; font-size: 1.25rem; letter-spacing: -0.025em; color: #B9B3A8; transition: color .2s; }
+.plist small { font: 400 11.5px var(--mono); color: var(--text-soft); display: flex; align-items: center; gap: 7px; }
+.plist button:hover b { color: var(--text-soft); }
+.plist button[aria-selected="true"] b { color: var(--text); }
+.plist button[aria-selected="true"] .plist__n { color: var(--accent); }
+.status { width: 6px; height: 6px; border-radius: 50%; background: #3E9B63; flex: none; }
+.plist__links { display: flex; gap: 18px; margin-top: 20px; }
+.plink { font: 500 12.5px var(--mono); color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+.plink:hover { color: var(--text); }
+
+.viewer { width: var(--frame-w); justify-self: end; }
+.viewer__bar { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin-bottom: 10px; }
+.flip { display: flex; border: 1px solid var(--text); border-radius: 8px; overflow: hidden; }
+.flip button { font: 500 12px var(--mono); border: 0; padding: 8px 14px; background: transparent; color: var(--text); cursor: pointer; }
+.flip button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+.viewer__url { font: 400 12px var(--mono); color: var(--text-soft); }
+.frame { position: relative; aspect-ratio: var(--ratio); border: 1px solid var(--bg-deep); background: var(--bg-deep); overflow: hidden; transition: border-color .45s, background-color .45s; }
+/* no border or panel on the diagram side, so it reads as printed on the page */
+.frame[data-side="back"] { border-color: transparent; background-color: transparent; }
+.frame__face { position: absolute; inset: 0; transition: opacity .45s var(--ease); }
+.frame__front img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.frame__back { display: grid; place-items: center; padding: 24px; }
+.frame__back::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(#DCD7CE 1px, transparent 1px); background-size: 18px 18px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 45%, transparent 85%); mask-image: radial-gradient(ellipse at center, #000 45%, transparent 85%); }
+.frame__back svg { position: relative; }
+.frame[data-side="front"] .frame__back, .frame[data-side="back"] .frame__front { opacity: 0; pointer-events: none; }
+.frame__back svg { width: 100%; height: 100%; }
+#projects [hidden] { display: none !important; }
+
+.dg-node rect { fill: var(--surface); stroke: var(--text); stroke-width: 1.2; }
+.dg-node--core rect { fill: var(--accent); stroke: var(--accent); }
+.dg-node--core text { fill: var(--bg); }
+.dg-node--ghost rect { fill: transparent; stroke: var(--text-soft); stroke-dasharray: 4 4; }
+.dg text { font-family: var(--font); font-size: 14px; font-weight: 500; fill: var(--text); }
+.dg text.sub { font-family: var(--mono); font-size: 10.5px; font-weight: 400; fill: var(--text-soft); }
+.dg-node--core text.sub { fill: #C9D3E4; }
+.dg path.flow { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 5 6; animation: flow 1.2s linear infinite; }
+.dg text.lbl { font-family: var(--mono); font-size: 10.5px; fill: var(--accent); font-weight: 400; }
+@keyframes flow { to { stroke-dashoffset: -22; } }
+
+@media (max-width: 960px) {
+  #projects { --frame-w: 100%; }
+  .work { grid-template-columns: 1fr; }
+  .viewer { justify-self: stretch; }
+  .viewer__url { display: none; }
+}
+
+.plist button:focus-visible, .flip button:focus-visible, .plink:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.plink[hidden] { display: none; }

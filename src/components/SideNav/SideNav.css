@@ -1,0 +1,63 @@
+.sidenav {
+  position: fixed;
+  left: 24px; top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  background: var(--surface);
+  border: 1px solid var(--bg-deep);
+  border-radius: 999px;
+  padding: 10px;
+  box-shadow: 0 10px 30px rgba(30, 30, 30, .06);
+  animation: nav-in .7s .2s var(--ease) both;
+}
+.sidenav ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.sidenav a {
+  position: relative;
+  display: grid; place-items: center;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  color: var(--text-soft);
+  transition: background .25s, color .25s;
+}
+.sidenav svg {
+  width: 22px; height: 22px;
+  fill: none; stroke: currentColor; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.sidenav a:hover { background: var(--bg-deep); color: var(--text); }
+.sidenav a[aria-current="true"] { background: var(--accent); color: var(--bg); }
+.sidenav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.sidenav__label {
+  position: absolute;
+  left: calc(100% + 16px); top: 50%;
+  transform: translate(-6px, -50%);
+  white-space: nowrap;
+  background: var(--text); color: var(--bg);
+  font: 500 13px var(--font);
+  padding: 6px 12px; border-radius: 8px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s, transform .2s;
+}
+.sidenav a:hover .sidenav__label,
+.sidenav a:focus-visible .sidenav__label { opacity: 1; transform: translate(0, -50%); }
+
+@keyframes nav-in { from { opacity: 0; translate: -24px 0; } to { opacity: 1; translate: 0 0; } }
+
+@media (max-width: 768px) {
+  .sidenav {
+    left: 50%; top: auto; bottom: 16px;
+    transform: translateX(-50%);
+    padding: 6px;
+    max-width: calc(100vw - 32px);
+  }
+  .sidenav ul { flex-direction: row; gap: 2px; }
+  .sidenav a { width: 44px; height: 44px; }
+  /* hide tooltips visually but keep them as the links' accessible names */
+  .sidenav__label { width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); }
+  @keyframes nav-in { from { opacity: 0; translate: 0 24px; } to { opacity: 1; translate: 0 0; } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidenav { animation: none; }
+}

@@ -1,0 +1,27 @@
+.tour-btn { display: inline-flex; align-items: center; gap: 8px; font: 500 12px var(--mono); padding: 8px 14px; border: 1px solid var(--text); border-radius: 8px; background: transparent; color: var(--text); cursor: pointer; transition: background .2s, color .2s; }
+.tour-btn:hover { background: var(--text); color: var(--bg); }
+.tour-btn svg { width: 10px; height: 10px; fill: currentColor; }
+.tour-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.tour-cursor { position: fixed; left: 0; top: 0; z-index: 100; width: 26px; height: 26px; pointer-events: none; opacity: 0; transition: opacity .3s; will-change: transform; filter: drop-shadow(0 3px 6px rgba(30,30,30,.25)); }
+.tour-cursor.on { opacity: 1; }
+.tour-cursor svg { width: 100%; height: 100%; display: block; transition: transform .12s var(--ease); transform-origin: 4px 3px; }
+.tour-cursor.press svg { transform: scale(.82); }
+.tour-ripple { position: fixed; z-index: 99; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 2px solid var(--accent); border-radius: 50%; pointer-events: none; animation: tour-ripple .6s var(--ease) forwards; }
+@keyframes tour-ripple { from { transform: scale(.3); opacity: 1; } to { transform: scale(1.4); opacity: 0; } }
+/* the corner nearest the cursor is tucked in like a chat-message tail */
+.tour-bubble { position: fixed; left: auto; top: 0; z-index: 100; max-width: 280px; padding: 10px 15px 11px; background: var(--text); color: var(--bg); border-radius: 20px 20px 20px 20px; border-top-left-radius: 5px; pointer-events: none; opacity: 0; transform: translateY(6px) scale(.9); transform-origin: top left; transition: opacity .25s, transform .4s cubic-bezier(.34,1.56,.64,1); box-shadow: 0 12px 30px rgba(30,30,30,.22); }
+.tour-bubble.flip-x { border-top-left-radius: 20px; border-top-right-radius: 5px; transform-origin: top right; }
+.tour-bubble.on { opacity: 1; transform: none; }
+.tour-bubble__who { display: block; font: 500 11px var(--mono); color: #9AAED0; margin-bottom: 2px; }
+.tour-bubble__text { font-size: 14px; line-height: 1.5; font-weight: 500; }
+.tour-bubble__dots { display: none; gap: 4px; padding: 6px 2px 4px; }
+.tour-bubble.typing .tour-bubble__dots { display: flex; }
+.tour-bubble.typing .tour-bubble__text { display: none; }
+.tour-bubble__dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--bg); opacity: .4; animation: tour-dot 1s infinite; }
+.tour-bubble__dots i:nth-child(2) { animation-delay: .15s; }
+.tour-bubble__dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes tour-dot { 0%, 60%, 100% { transform: none; opacity: .4; } 30% { transform: translateY(-4px); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .tour-cursor { transition: none; }
+  .tour-ripple { display: none; }
+}

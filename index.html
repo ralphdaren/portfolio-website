@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ralph Daren - Full-Stack Web Developer</title>
   <meta name="description" content="Ralph Daren — web developer with a passion for building functional ideas and full-stack websites.">
-  <link rel="icon" href="favicon.ico" sizes="48x48">
-  <link rel="icon" href="assets/favicon/favicon-32.png" type="image/png" sizes="32x32">
-  <link rel="icon" href="assets/favicon/icon-192.png" type="image/png" sizes="192x192">
-  <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
+  <link rel="icon" href="public/favicon.ico" sizes="48x48">
+  <link rel="icon" href="public/icons/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="public/icons/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="public/icons/apple-touch-icon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="src/styles/index.css">
 </head>
 <body>
 
@@ -65,7 +65,7 @@
     <section id="intro" class="hero" aria-label="Introduction">
       <h1 class="hero__headline">
         <span class="w quote" aria-hidden="true">“</span><span class="w">I'm</span>
-        <span class="pic pic--me" aria-hidden="true"><img src="assets/hero/me.jpg" alt="" width="460" height="331"></span>
+        <span class="pic pic--me" aria-hidden="true"><img src="public/images/hero/me.jpg" alt="" width="460" height="331"></span>
         <span class="w accent">Ralph Daren,</span>
         <span class="w">a</span>
         <span class="pic pic--code pic--big" aria-hidden="true"><span class="dots"><i></i><i></i><i></i></span><code><span class="tk-c">your idea</span>
@@ -78,7 +78,7 @@
 <span class="tk-s">✓</span> built
 <span class="tk-s">✓</span> launched<span class="caret"></span></code></span>
         <span class="w">functional</span> <span class="w">ideas</span> <span class="w">and</span>
-        <span class="pic pic--work" aria-hidden="true"><img src="assets/hero/work.jpg" alt="" width="859" height="432"></span>
+        <span class="pic pic--work" aria-hidden="true"><img src="public/images/hero/work.jpg" alt="" width="859" height="432"></span>
         <span class="w accent">full-stack websites.</span><span class="w quote" aria-hidden="true">”</span>
       </h1>
     </section>
@@ -95,7 +95,7 @@
 
         <div class="about">
           <div class="about__photo">
-            <img src="assets/about.jpeg" loading="lazy" alt="Ralph Daren" width="1086" height="1448">
+            <img src="public/images/about.jpg" loading="lazy" alt="Ralph Daren" width="1086" height="1448">
             <a class="contrib" href="https://github.com/ralphdaren" target="_blank" rel="noopener">
               <div class="contrib__grid" id="contrib-grid" aria-hidden="true"></div>
               <p class="contrib__label"><span><b id="contrib-total">…</b> contributions in the last year</span><span class="contrib__link">github.com/ralphdaren ↗</span></p>
@@ -179,8 +179,8 @@
 
             <div class="frame" data-side="front">
               <div class="frame__face frame__front">
-                <img data-p="mjp" src="assets/mjp-beauty/mjp-beauty.png" alt="MJP Beauty landing page" width="1912" height="840" loading="lazy">
-                <img data-p="tf" src="assets/trendy-films/trendy-films.png" alt="Trendy Films landing page" width="1917" height="840" loading="lazy" hidden>
+                <img data-p="mjp" src="public/images/projects/mjp-beauty.png" alt="MJP Beauty landing page" width="1912" height="840" loading="lazy">
+                <img data-p="tf" src="public/images/projects/trendy-films.png" alt="Trendy Films landing page" width="1917" height="840" loading="lazy" hidden>
               </div>
 
               <div class="frame__face frame__back">
@@ -308,6 +308,6 @@
 
   </main>
 
-  <script src="js/main.js"></script>
+  <script type="module" src="src/main.js"></script>
 </body>
 </html>

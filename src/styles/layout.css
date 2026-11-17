@@ -1,0 +1,26 @@
+main { padding-left: var(--nav-w); }
+@media (max-width: 768px) { main { padding-left: 0; padding-bottom: 88px; } }
+
+.sec { padding: 112px 24px; border-top: 1px solid var(--bg-deep); }
+.wrap { max-width: 1120px; margin: 0 auto; }
+.sec__head { margin-bottom: 56px; }
+.sec__num { font: 500 13px var(--mono); color: var(--text-soft); margin-bottom: 10px; }
+.sec__num b { color: var(--accent); font-weight: 500; }
+.sec__title { font-weight: 600; font-size: clamp(2.25rem, 5vw, 3.75rem); letter-spacing: -0.035em; line-height: 1.05; }
+.sec__title em { font-style: normal; color: var(--accent); }
+
+/* Desktop: every section fills exactly one screen; content is sized partly in vh so it fits without scrolling. */
+@media (min-width: 1200px) {
+  .sec {
+    min-height: 100vh; min-height: 100svh;
+    display: flex; align-items: center;
+    padding-block: clamp(32px, 6vh, 72px);
+  }
+  .sec > .wrap { width: 100%; }
+  .sec__head { margin-bottom: clamp(20px, 4vh, 48px); }
+  .sec__title { font-size: clamp(2rem, min(5vw, 7vh), 3.75rem); }
+}
+@media (max-width: 600px) { .sec { padding: 80px 16px; } }
+
+.sec__head--row { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+.sec__lede { max-width: 30em; color: var(--text-soft); line-height: 1.7; font-size: 15px; }

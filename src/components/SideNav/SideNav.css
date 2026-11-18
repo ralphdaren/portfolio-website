@@ -24,7 +24,11 @@
   fill: none; stroke: currentColor; stroke-width: 1.7;
   stroke-linecap: round; stroke-linejoin: round;
 }
-.sidenav a:hover { background: var(--bg-deep); color: var(--text); }
+/* hover only where a real pointer exists: on touch screens a tapped link keeps :hover
+   until the next tap, which left the cream highlight stuck after scrolling away */
+@media (hover: hover) {
+  .sidenav a:hover { background: var(--bg-deep); color: var(--text); }
+}
 .sidenav a[aria-current="true"] { background: var(--accent); color: var(--bg); }
 .sidenav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
@@ -39,8 +43,10 @@
   opacity: 0; pointer-events: none;
   transition: opacity .2s, transform .2s;
 }
-.sidenav a:hover .sidenav__label,
 .sidenav a:focus-visible .sidenav__label { opacity: 1; transform: translate(0, -50%); }
+@media (hover: hover) {
+  .sidenav a:hover .sidenav__label { opacity: 1; transform: translate(0, -50%); }
+}
 
 @keyframes nav-in { from { opacity: 0; translate: -24px 0; } to { opacity: 1; translate: 0 0; } }
 

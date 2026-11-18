@@ -60,7 +60,8 @@
     padding: 6px;
     max-width: calc(100vw - 32px);
   }
-  .sidenav ul { flex-direction: row; gap: 2px; }
+  /* 7 buttons: the gap grows with whatever width is spare (up to 10px), so it still fits a 360px phone */
+  .sidenav ul { flex-direction: row; gap: clamp(2px, calc((100vw - 352px) / 6), 10px); }
   .sidenav a { width: 44px; height: 44px; }
   /* hide tooltips visually but keep them as the links' accessible names */
   .sidenav__label { width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); }

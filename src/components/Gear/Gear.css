@@ -59,7 +59,18 @@
   .desk { width: 100%; }
   .gear__panel { max-width: none; }
   .gear__intro { align-items: flex-start; }
-  .gear__img { height: auto; aspect-ratio: 4 / 3; }
+  /* name and description run full width; below them a small product photo sits beside the specs and link */
+  .gear__body {
+    display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); column-gap: 18px;
+    grid-template-areas: "cat cat" "name name" "desc desc" "img specs" "img link";
+    grid-template-rows: auto auto auto auto 1fr;
+  }
+  .gear__cat { grid-area: cat; }
+  .gear__name { grid-area: name; }
+  .gear__desc { grid-area: desc; }
+  .gear__img { grid-area: img; align-self: center; height: auto; aspect-ratio: 1; margin: 0; }
+  .gear__specs { grid-area: specs; align-self: end; grid-template-columns: auto minmax(0, 1fr); gap: 5px 12px; font-size: 11.5px; margin-bottom: 14px; }
+  .gear__link { grid-area: link; align-self: start; justify-self: start; gap: 6px; padding: 7px 11px; font-size: 11.5px; border-radius: 7px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .gear__body, .pin::after { animation: none; }

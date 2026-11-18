@@ -29,12 +29,7 @@
       pin.style.left = `${item.x}%`;
       pin.style.top = `${item.y}%`;
       pin.style.setProperty('--d', `${((i * 0.2) % 2.4).toFixed(1)}s`); // stagger the pulses
-      pin.addEventListener('click', e => {
-        show(i);
-        // stacked layout: the panel is below the photo, so bring it into view for a real tap
-        // (not for the tour's synthetic clicks, which scroll to each step on their own)
-        if (e.isTrusted && matchMedia('(max-width: 960px)').matches) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
+      pin.addEventListener('click', () => show(i));
       return pin;
     });
     desk.append(...pins);

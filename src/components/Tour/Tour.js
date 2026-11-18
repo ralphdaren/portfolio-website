@@ -94,11 +94,11 @@
       let side = 'right', bx = x + 22;
       if (bx + w > innerWidth - MARGIN) { side = 'left'; bx = x - 6 - w; }
       if (bx < MARGIN) { side = 'center'; bx = Math.min(Math.max(x - w / 2, MARGIN), innerWidth - MARGIN - w); }
-      const low = floor();
+      const low = floor(), high = ceiling();
       // below if it fits; otherwise above, unless there's even less room above
       let by = y + 26, above = false;
-      if (by + h > low && y - 12 - MARGIN > low - by) { above = true; by = y - h - 12; }
-      by = Math.min(Math.max(by, MARGIN), low - h);
+      if (by + h > low && y - 12 - high > low - by) { above = true; by = y - h - 12; }
+      by = Math.min(Math.max(by, high), low - h);
 
       bubble.classList.toggle('flip-x', side === 'left');
       bubble.classList.toggle('center', side === 'center');
@@ -161,11 +161,19 @@
       setTimeout(() => r.remove(), 700);
     }
 
+    // Phones (bottom nav layout) pin the step bar to the top of the screen, so the bottom stays free for
+    // the bubble when a step points at the nav; elsewhere it sits at the bottom, above anything to avoid.
+    const barOnTop = () => matchMedia('(max-width: 768px)').matches;
     function placeBar() {
-      bar.style.bottom = `${innerHeight - bottomLimit()}px`;
+      const top = barOnTop();
+      bar.classList.toggle('top', top);
+      bar.style.bottom = top ? '' : `${innerHeight - bottomLimit()}px`;
     }
-    // lowest point the bubble / step targets may use: above the mobile nav and the step bar
-    const floor = () => Math.min(bottomLimit(), bar.classList.contains('on') ? bar.getBoundingClientRect().top - 8 : Infinity);
+    const barShown = () => bar.classList.contains('on');
+    // lowest point the bubble / step targets may use: above the mobile nav and a bottom step bar
+    const floor = () => Math.min(bottomLimit(), barShown() && !barOnTop() ? bar.getBoundingClientRect().top - 8 : Infinity);
+    // highest point they may use: below a top step bar
+    const ceiling = () => (barShown() && barOnTop() ? bar.getBoundingClientRect().bottom + 8 : MARGIN);
 
     // the cursor is position: fixed, so keep it (and the bubble) on the target while the page scrolls
     function follow() {
@@ -210,7 +218,7 @@
           // `target` still points at the previous step here, so the cursor rides along with the page
           // while it scrolls, then glides to the new step (instead of jumping straight onto it).
           const box = el.getBoundingClientRect();
-          if (box.top < 0 || box.bottom > floor()) {
+          if (box.top < ceiling() || box.bottom > floor()) {
             el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
             await scrollSettled(token);
           }

@@ -26,7 +26,7 @@
 .tour-bubble__dots i:nth-child(3) { animation-delay: .3s; }
 @keyframes tour-dot { 0%, 60%, 100% { transform: none; opacity: .4; } 30% { transform: translateY(-4px); opacity: 1; } }
 
-/* step counter + "End tour", pinned to the bottom centre while a tour plays (above the mobile nav) */
+/* step counter + "Stop tour", pinned to the bottom centre while a tour plays (top centre on phones) */
 .tour-bar {
   position: fixed; left: 50%; bottom: 16px; z-index: 100;
   display: flex; align-items: center; gap: 4px; padding: 5px 5px 5px 14px;
@@ -35,6 +35,9 @@
   opacity: 0; pointer-events: none; transform: translate(-50%, 8px); transition: opacity .25s, transform .3s var(--ease);
 }
 .tour-bar.on { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+/* phones: pinned to the top instead (see placeBar in Tour.js), clear of the notch / Dynamic Island */
+.tour-bar.top { top: calc(env(safe-area-inset-top, 0px) + 12px); bottom: auto; transform: translate(-50%, -8px); }
+.tour-bar.top.on { transform: translate(-50%, 0); }
 .tour-bar__step { color: #9AAED0; padding-right: 6px; white-space: nowrap; }
 .tour-bar__end { font: inherit; border: 0; border-radius: 999px; padding: 7px 12px; background: rgba(253, 252, 249, .12); color: var(--bg); cursor: pointer; white-space: nowrap; transition: background .2s; }
 @media (hover: hover) { .tour-bar__end:hover { background: rgba(253, 252, 249, .24); } }

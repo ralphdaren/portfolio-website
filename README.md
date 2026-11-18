@@ -17,8 +17,7 @@ index.html                  page markup, one <section> per component
 public/                     static files, linked as-is
   favicon.ico
   icons/                    favicon + home-screen icons
-  images/                   hero, about, project screenshots, gear/ (desk photo + product PNGs)
-  ralph-daren-resume.pdf
+  images/                   hero, about, project screenshots, gear/ (desk photo + product PNGs), experience/ (company logos)
 src/
   main.js                   entry: starts each component (runs last)
   styles/

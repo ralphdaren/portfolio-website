@@ -7,4 +7,5 @@
   Site.initProjects();
   Site.initStack();
   Site.initGear();
+  Site.initContact();
 })(window.Site);

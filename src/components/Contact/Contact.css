@@ -1,0 +1,61 @@
+/* Closing section: one call to action, the email with a copy button, then social links and the footer. */
+.contact { text-align: center; }
+.contact__h { font-weight: 500; font-size: clamp(2.5rem, min(7vw, 10vh), 5.5rem); letter-spacing: -0.045em; line-height: 1.05; margin: 6px 0 24px; }
+.contact__h em { font-style: normal; color: var(--accent); font-weight: 600; }
+.contact__p { color: var(--text-soft); max-width: 32em; margin: 0 auto 36px; line-height: 1.7; }
+
+.contact__email {
+  display: inline-flex; align-items: center; gap: 12px; max-width: 100%;
+  padding: 8px 8px 8px 22px; margin-bottom: 20px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--bg-deep); box-shadow: 0 10px 30px rgba(30, 30, 30, .05);
+  font: 500 15px var(--mono);
+}
+.contact__email span { overflow-wrap: anywhere; }
+.contact__copy {
+  flex: none; min-width: 72px; font: 500 12px var(--mono); border: 0; cursor: pointer;
+  background: var(--text); color: var(--bg); padding: 10px 14px; border-radius: 999px; transition: background .2s;
+}
+.contact__copy:hover, .contact__copy.is-done { background: var(--accent); }
+
+.contact__cta {
+  display: block; width: fit-content; margin: 0 auto 64px;
+  font: 500 14px var(--font); padding: 13px 22px; border-radius: 999px; text-decoration: none;
+  background: var(--accent); color: var(--bg); transition: transform .2s var(--ease);
+}
+.contact__cta:hover { transform: translateY(-2px); }
+
+.contact__socials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 720px; margin: 0 auto; text-align: left; }
+.contact__social {
+  display: flex; align-items: center; gap: 14px; padding: 18px 20px;
+  background: var(--surface); border: 1px solid var(--bg-deep); border-radius: 20px;
+  text-decoration: none; color: var(--text); transition: border-color .2s, transform .2s var(--ease);
+}
+.contact__social:hover { border-color: var(--accent); transform: translateY(-3px); }
+.contact__social svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.contact__social svg.is-filled { fill: currentColor; stroke: none; }
+.contact__social b { display: block; font-weight: 500; font-size: 14px; }
+.contact__social small { font: 400 11.5px var(--mono); color: var(--text-soft); }
+.contact__social > span:last-child { margin-left: auto; color: var(--text-soft); }
+
+.contact__copy:focus-visible, .contact__cta:focus-visible, .contact__social:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.footer {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--bg-deep);
+  font: 400 12px var(--mono); color: var(--text-soft); text-align: left;
+}
+
+@media (min-width: 1200px) {
+  .contact__p { margin-bottom: clamp(20px, 3.6vh, 36px); }
+  .contact__cta { margin-bottom: clamp(32px, 6vh, 64px); }
+  .footer { margin-top: clamp(32px, 7vh, 80px); }
+}
+@media (max-width: 600px) {
+  .contact__socials { grid-template-columns: 1fr; }
+  .contact__email { font-size: 13px; padding-left: 18px; }
+  .contact__cta { margin-bottom: 48px; }
+  .footer { margin-top: 56px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact__cta, .contact__social { transition: none; }
+}

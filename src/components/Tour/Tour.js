@@ -22,7 +22,10 @@
    * and bubble follow their target when the page scrolls). It ends when the visitor leaves the section
    * (e.g. a nav link), presses Esc, or uses "Stop tour" (the section button or the step bar).
    *
-   * @param {{ id: string, steps: { target: string, text: string, click?: boolean }[], section?: Element, who?: string }} options
+   * A step with `sweep` (a selector) glides quickly across every matching element, marking each in turn,
+   * then shows its `text` on the last one. `name(el)` may return a label to flash in the bubble for each
+   * element (return null when the element shows its own label).
+   * @param {{ id: string, steps: { target: string, text: string, click?: boolean, sweep?: string, name?: (el: Element) => string|null }[], section?: Element, who?: string }} options
    * @returns {{ start: () => Promise<void>, stop: () => void }}
    * Fires `tour:start` and `tour:end` on document (the latter also when stopped early), with the tour id as `detail`.
    */
@@ -120,6 +123,34 @@
       }
     }
 
+    // shows a short label at once (no typing dots), used while sweeping across several targets
+    function flashBubble(text) {
+      message = text;
+      out.textContent = text;
+      bubble.classList.remove('typing');
+      positionBubble();
+      bubble.classList.add('on');
+    }
+
+    async function sweep(step, token) {
+      const items = [...document.querySelectorAll(step.sweep)].filter(el => el.getClientRects().length);
+      for (const [i, el] of items.entries()) {
+        mark(el);
+        bubble.classList.remove('on'); // the previous name hides while the cursor moves on
+        const [tx, ty] = pointOn(el);
+        const ms = i === 0 ? Math.max(500, Math.min(1100, Math.hypot(tx - x, ty - y) * 1.3)) : 260;
+        place(tx, ty, ms);
+        await sleep((reduce ? 0 : ms) + 60, token);
+        const label = step.name && step.name(el);
+        if (label) flashBubble(label); else bubble.classList.remove('on');
+        await sleep(520, token);
+      }
+      bubble.classList.remove('on');
+      await sleep(250, token);
+      await showBubble(step.text, token);
+      await sleep(1000 + step.text.length * 16, token);
+    }
+
     function ripple() {
       if (reduce) return;
       const r = document.createElement('span');
@@ -174,6 +205,7 @@
           if (!el || !el.getClientRects().length) continue; // hidden since the tour started: skip
           barStep.textContent = `Step ${n + 1} of ${shown.length}`;
           bubble.classList.remove('on');
+          if (step.sweep) { await sweep(step, token); continue; }
           // on small screens the next step is often below the fold: bring it into view first.
           // `target` still points at the previous step here, so the cursor rides along with the page
           // while it scrolls, then glides to the new step (instead of jumping straight onto it).
@@ -182,7 +214,7 @@
             el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
             await scrollSettled(token);
           }
-          target = el;
+          mark(el);
           const [tx, ty] = pointOn(el);
           const ms = Math.max(500, Math.min(1100, Math.hypot(tx - x, ty - y) * 1.3));
           place(tx, ty, ms);
@@ -202,10 +234,17 @@
       } catch { /* stopped early (Stop tour, Esc, left the section, or another tour took over) */ }
     }
 
+    // the element the cursor is on gets .is-tour-target, so a section can style it (e.g. like its hover state)
+    function mark(el) {
+      if (target) target.classList.remove('is-tour-target');
+      target = el;
+      if (el) el.classList.add('is-tour-target');
+    }
+
     function stop() {
       const wasRunning = run !== 0;
       run = 0;
-      target = null;
+      mark(null);
       if (active === api) active = null;
       cursor.classList.remove('on');
       bubble.classList.remove('on');
@@ -227,9 +266,10 @@
    * reaches the section, a spotlight dims the page and highlights that button with "Take the tour" / "Skip tour" (once per section).
    * The button reads "Take the tour", "Stop tour" while playing (clicking it stops), then "Replay tour".
    * `?tour=reset` in the URL forgets both.
-   * @param {{ section: Element, id: string, steps: object[], onEnd?: () => void }} options
+   * `introDelay` is how long the section must stay on screen before the spotlight opens (ms).
+   * @param {{ section: Element, id: string, steps: object[], onEnd?: () => void, introDelay?: number }} options
    */
-  function initSectionTour({ section, id, steps, onEnd }) {
+  function initSectionTour({ section, id, steps, onEnd, introDelay = 700 }) {
     // the tour was taken from its button (named 'taken', not 'seen', so flags left by the old autoplay don't count)
     const seenKey = `tour-taken:${id}`;
     const introKey = `tour-intro:${id}`; // the spotlight was shown
@@ -258,7 +298,7 @@
         setState('playing');
       });
       document.addEventListener('tour:end', e => e.detail === id && setState('seen'));
-      if (storage.get(seenKey) !== '1' && storage.get(introKey) !== '1') spotlightOnce(section, btn, introKey, begin);
+      if (storage.get(seenKey) !== '1' && storage.get(introKey) !== '1') spotlightOnce(section, btn, introKey, begin, introDelay);
     }
     if (onEnd) document.addEventListener('tour:end', e => e.detail === id && onEnd());
     return tour;
@@ -269,7 +309,7 @@
 
   // Shows the spotlight once, when the section is mostly on screen and scrolling has settled.
   // Waits for its next visit if a tour or another spotlight is showing at that moment.
-  function spotlightOnce(section, btn, introKey, begin) {
+  function spotlightOnce(section, btn, introKey, begin, delay) {
     // "mostly on screen": 60%, or less when the section is taller than the screen (e.g. stacked on a phone)
     const threshold = Math.min(0.6, (innerHeight / Math.max(section.offsetHeight, 1)) * 0.8);
     let timer;
@@ -281,7 +321,7 @@
         io.disconnect();
         storage.set(introKey, '1');
         openSpotlight(btn, begin);
-      }, 700);
+      }, delay);
     }, { threshold });
     io.observe(section);
   }

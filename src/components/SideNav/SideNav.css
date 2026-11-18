@@ -29,6 +29,8 @@
 @media (hover: hover) {
   .sidenav a:hover { background: var(--bg-deep); color: var(--text); }
 }
+/* the intro tour's cursor "hovers" each link in turn */
+.sidenav a.is-tour-target { background: var(--bg-deep); color: var(--text); }
 .sidenav a[aria-current="true"] { background: var(--accent); color: var(--bg); }
 .sidenav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
@@ -43,7 +45,8 @@
   opacity: 0; pointer-events: none;
   transition: opacity .2s, transform .2s;
 }
-.sidenav a:focus-visible .sidenav__label { opacity: 1; transform: translate(0, -50%); }
+.sidenav a:focus-visible .sidenav__label,
+.sidenav a.is-tour-target .sidenav__label { opacity: 1; transform: translate(0, -50%); }
 @media (hover: hover) {
   .sidenav a:hover .sidenav__label { opacity: 1; transform: translate(0, -50%); }
 }

@@ -1,9 +1,16 @@
-#gear { --r: 14px; --r-sm: 8px; }
+#gear {
+  --r: 14px; --r-sm: 8px;
+  /* photo is never cropped: its width follows the screen height so the section fits one frame */
+  --desk: min(calc(100vw - 560px), calc((100svh - 290px) * 4 / 3));
+  --gap: clamp(28px, 4vw, 56px);
+  --panel: 340px;
+}
+/* on large screens the photo outgrows the shared 1120px column, so this section widens to fit photo + panel */
+#gear > .wrap { max-width: max(1120px, calc(var(--desk) + var(--gap) + var(--panel))); }
 .gear__intro { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
-.gear { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: start; }
+.gear { display: grid; grid-template-columns: auto minmax(var(--panel), 1fr); gap: var(--gap); align-items: start; }
 
-/* photo is never cropped: its width follows the screen height so the section fits one frame */
-.desk { position: relative; width: min(calc(100vw - 560px), calc((100svh - 290px) * 4 / 3)); }
+.desk { position: relative; width: var(--desk); }
 .desk img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; border-radius: var(--r); }
 
 /* the button is larger than the visible dot for an easy hit area; the ring pulses so it reads as clickable */
@@ -47,6 +54,7 @@
 .gear__specs a:focus-visible, .gear__link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 @media (max-width: 960px) {
+  #gear > .wrap { max-width: 1120px; }
   .gear { grid-template-columns: 1fr; }
   .desk { width: 100%; }
   .gear__panel { max-width: none; }

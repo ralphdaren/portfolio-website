@@ -1,0 +1,40 @@
+/* Timeline of roles, oldest to newest. Desktop: one horizontal line with each role hanging under its logo.
+   Single column: the line turns vertical and runs down from each logo to the next. */
+.xp { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; position: relative; padding-top: 66px; }
+.xp::before { content: ""; position: absolute; left: 0; right: 0; top: 22px; height: 1.5px; background: #E0DCD4; }
+.xp__item { position: relative; }
+
+/* logos sit straight on the page; their page-coloured backing (wider than the logo by 22px
+   each side) hides the line behind them, so the line stops short of every logo */
+.xp__logo {
+  position: absolute; left: -22px; top: -66px; height: 44px;
+  display: flex; align-items: center; padding: 0 22px; background: var(--bg);
+}
+.xp__logo img { height: 100%; width: 118px; object-fit: contain; object-position: left center; display: block; }
+/* RRC's official logo needs approval, so its initials are set in the college's red instead */
+.xp__logo--rrc { font: 700 22px var(--font); letter-spacing: .04em; color: #C8102E; }
+
+.xp__when { font: 500 12px var(--mono); color: var(--accent); letter-spacing: .02em; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.xp__live { width: 6px; height: 6px; border-radius: 50%; background: #3E9B63; box-shadow: 0 0 0 3px rgba(62, 155, 99, .15); }
+.xp__role { font-weight: 600; font-size: 1.25rem; letter-spacing: -0.02em; line-height: 1.25; }
+.xp__where { font-size: 13.5px; color: var(--text-soft); margin: 4px 0 14px; }
+.xp__where a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(47, 75, 124, .35); transition: border-color .2s; }
+.xp__where a:hover { border-bottom-color: currentColor; }
+.xp__where a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.xp__item ul { list-style: none; display: grid; gap: 8px; margin-bottom: 16px; }
+.xp__item li { position: relative; padding-left: 16px; font-size: 14px; line-height: 1.6; color: var(--text-soft); }
+.xp__item li::before { content: ""; position: absolute; left: 0; top: .72em; width: 6px; height: 1.5px; background: var(--accent); }
+.xp__tags { display: flex; flex-wrap: wrap; gap: 6px; font: 400 11.5px var(--mono); color: var(--text-soft); }
+.xp__tags span { border: 1px solid #E0DCD4; border-radius: 6px; padding: 3px 8px; }
+
+@media (max-width: 960px) {
+  .xp { grid-template-columns: 1fr; gap: 32px; padding: 0; }
+  .xp::before { display: none; }
+  .xp__logo { position: static; padding: 0; height: 40px; margin-bottom: 14px; }
+  .xp__logo img { width: 110px; }
+  .xp__item > :not(.xp__logo) { margin-left: 28px; }
+  /* vertical line from under this logo to just above the next one */
+  .xp__item::after { content: ""; position: absolute; left: 9px; top: 62px; bottom: -10px; width: 1.5px; background: #E0DCD4; }
+  .xp__item:last-child::after { bottom: 0; }
+  .xp__item li { font-size: 13.5px; }
+}

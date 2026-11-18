@@ -110,10 +110,33 @@
   .ai-tile svg { width: 19px; height: 19px; }
   .gitlog li { padding: clamp(5px, 1vh, 9px) 0; }
 }
+/* Single column: a profile-card header (small photo beside the headline) instead of a full-width portrait.
+   The two wrappers dissolve so their children can share one grid; `order` moves the GitHub grid below the text. */
 @media (max-width: 960px) {
-  .about { grid-template-columns: 1fr; gap: 32px; }
+  .about { grid-template-columns: clamp(92px, 24vw, 150px) minmax(0, 1fr); gap: 0 18px; align-items: start; }
+  .about__photo, .about__text { display: contents; }
+  .about__photo img { grid-column: 1; grid-row: 1; align-self: center; aspect-ratio: 4 / 5; border-radius: 16px; }
+  .about__h { grid-column: 2; grid-row: 1; align-self: center; margin: 0; font-size: clamp(1.15rem, 4.6vw, 1.6rem); }
+  .about__text > :not(.about__h), .contrib, .gitlog { grid-column: 1 / -1; }
+  .about .body { margin-top: 24px; }
+  .define { margin-bottom: 28px; }
+  .contrib { order: 1; margin-top: 32px; }
+  .gitlog { order: 2; margin-top: 28px; }
 }
 @media (max-width: 600px) {
   .gitlog { font-size: 12px; }
-  .ai-tile { width: 40px; height: 40px; }
+  /* one line on every phone: text and tiles scale with the screen width */
+  .focus { flex-wrap: nowrap; white-space: nowrap; gap: 2vw; font-size: 3.6vw; }
+  .ai-tile { width: 7.2vw; height: 7.2vw; margin-left: -2.4vw; border-radius: 2.2vw; }
+  .ai-tile svg { width: 3.7vw; height: 3.7vw; }
+  /* date moves up beside the label so the text gets the full width */
+  .gitlog li { grid-template-columns: 1fr auto; }
+  .gitlog .when { grid-row: 1; align-self: baseline; }
+  .gitlog .txt { grid-column: 1 / -1; }
+  /* narrower card with smaller type so it has room on both sides */
+  .gitlog { margin-inline: 5vw; padding: 12px 16px 14px; border-radius: 14px; }
+  .gitlog .txt { font-size: 13px; }
+  .gitlog .lbl { font-size: 9.5px; }
+  .gitlog .when, .gitlog__bar { font-size: 10px; }
+  .gitlog li { padding: 7px 0; }
 }

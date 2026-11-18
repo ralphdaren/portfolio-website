@@ -36,7 +36,7 @@
 .pin[aria-pressed="true"]::after { border-color: rgba(253, 252, 249, .95); }
 .pin:focus-visible { outline: 2px solid var(--bg); outline-offset: 2px; }
 
-.gear__panel { max-width: 380px; }
+.gear__panel { max-width: 380px; align-self: center; }
 .gear__body { animation: gear-in .35s var(--ease) both; }
 @keyframes gear-in { from { opacity: 0; transform: translateY(8px); } }
 /* transparent PNGs sit straight on the page, no panel or border */

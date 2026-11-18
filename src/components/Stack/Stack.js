@@ -12,6 +12,19 @@
       });
     }
 
+    // single-column layouts read as an accordion: each panel moves under its own category name,
+    // and back to the shared shelf beside the list on wider screens
+    const shelf = document.querySelector('#stack .stack__shelf');
+    const narrow = matchMedia('(max-width: 960px)');
+    function place() {
+      tabs.forEach(t => {
+        const panel = document.getElementById(t.getAttribute('aria-controls'));
+        (narrow.matches ? t.parentElement : shelf).append(panel);
+      });
+    }
+    place();
+    narrow.addEventListener('change', place);
+
     tabs.forEach((tab, i) => {
       tab.addEventListener('click', () => select(tab));
       tab.addEventListener('keydown', e => {

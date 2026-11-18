@@ -1,7 +1,7 @@
 .stack { display: grid; grid-template-columns: 320px 1fr; gap: 64px; align-items: start; }
 .stack__cats { list-style: none; }
-.stack__cats li { border-top: 1px solid var(--bg-deep); }
-.stack__cats li:first-child { border-top: 0; }
+.stack__cats > li { border-top: 1px solid var(--bg-deep); }
+.stack__cats > li:first-child { border-top: 0; }
 .stack__cats button {
   width: 100%; display: flex; align-items: baseline; gap: 14px; text-align: left;
   border: 0; background: none; cursor: pointer; padding: clamp(10px, 1.8vh, 16px) 0;
@@ -36,12 +36,21 @@
 .tool:hover svg { transform: scale(1.12); }
 @keyframes tool-in { from { opacity: 0; transform: translateY(10px); } }
 
+/* Single column: accordion. Stack.js moves each panel into its category's <li>, under the hint. */
 @media (max-width: 960px) {
-  .stack { grid-template-columns: 1fr; gap: 28px; }
-}
-@media (max-width: 600px) {
-  .stack__tools { grid-template-columns: repeat(3, 1fr); }
-  .tool svg { width: 36px; height: 36px; }
+  #stack .sec__head { margin-bottom: 20px; }
+  .stack { display: block; }
+  .stack__shelf { display: none; }
+  .stack__cats button { padding: 14px 0; font-size: 1.15rem; }
+  .stack__cats button::after { content: "+"; margin-left: auto; font: 400 1.25rem/1 var(--mono); color: var(--text-soft); }
+  .stack__cats button[aria-selected="true"]::after { content: "\2212"; color: var(--accent); }
+  .stack__cats button[aria-selected="true"] + .stack__hint { padding-bottom: 14px; }
+  .stack__cats li > .stack__tools {
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: 14px 6px; padding: 12px 0 20px 25px;
+  }
+  .tool { gap: 8px; font-size: 11.5px; line-height: 1.3; }
+  .tool svg { width: 32px; height: 32px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .tool { animation: none; }

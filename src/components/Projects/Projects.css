@@ -52,5 +52,16 @@
   .viewer__url { display: none; }
 }
 
+/* phones swap the wide diagram for a stacked one and give the frame a matching portrait shape */
+.dg--m { display: none; }
+@media (max-width: 600px) {
+  .dg--d { display: none; }
+  .dg--m { display: block; }
+  .frame[data-side="back"] { aspect-ratio: 360 / 440; }
+  .frame__back { padding: 0; }
+  .flip { border-radius: 7px; }
+  .flip button { font-size: 10.5px; padding: 6px 10px; }
+}
+
 .plist button:focus-visible, .flip button:focus-visible, .plink:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .plink[hidden] { display: none; }

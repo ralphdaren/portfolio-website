@@ -9,7 +9,7 @@
   color: #B8B5AE; transition: color .25s;
 }
 .stack__cats button small { font: 500 11px var(--mono); color: inherit; }
-.stack__cats button:hover { color: var(--text-soft); }
+@media (hover: hover) { .stack__cats button:hover { color: var(--text-soft); } }
 .stack__cats button[aria-selected="true"] { color: var(--text); cursor: default; padding-bottom: 4px; }
 .stack__cats button[aria-selected="true"] small { color: var(--accent); }
 .stack__cats button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
@@ -33,7 +33,7 @@
   animation: tool-in .45s var(--ease) both; animation-delay: calc(var(--k) * 40ms);
 }
 .tool svg { width: 44px; height: 44px; transition: transform .25s var(--ease); }
-.tool:hover svg { transform: scale(1.12); }
+@media (hover: hover) { .tool:hover svg { transform: scale(1.12); } }
 @keyframes tool-in { from { opacity: 0; transform: translateY(10px); } }
 
 /* Single column: accordion. Stack.js moves each panel into its category's <li>, under the hint. */

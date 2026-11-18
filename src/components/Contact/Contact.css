@@ -15,14 +15,15 @@
   flex: none; min-width: 72px; font: 500 12px var(--mono); border: 0; cursor: pointer;
   background: var(--text); color: var(--bg); padding: 10px 14px; border-radius: 999px; transition: background .2s;
 }
-.contact__copy:hover, .contact__copy.is-done { background: var(--accent); }
+.contact__copy.is-done { background: var(--accent); }
+@media (hover: hover) { .contact__copy:hover { background: var(--accent); } }
 
 .contact__cta {
   display: block; width: fit-content; margin: 0 auto 64px;
   font: 500 14px var(--font); padding: 13px 22px; border-radius: 999px; text-decoration: none;
   background: var(--accent); color: var(--bg); transition: transform .2s var(--ease);
 }
-.contact__cta:hover { transform: translateY(-2px); }
+@media (hover: hover) { .contact__cta:hover { transform: translateY(-2px); } }
 
 .contact__socials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 720px; margin: 0 auto; text-align: left; }
 .contact__social {
@@ -30,7 +31,7 @@
   background: var(--surface); border: 1px solid var(--bg-deep); border-radius: 20px;
   text-decoration: none; color: var(--text); transition: border-color .2s, transform .2s var(--ease);
 }
-.contact__social:hover { border-color: var(--accent); transform: translateY(-3px); }
+@media (hover: hover) { .contact__social:hover { border-color: var(--accent); transform: translateY(-3px); } }
 .contact__social svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .contact__social svg.is-filled { fill: currentColor; stroke: none; }
 .contact__social b { display: block; font-weight: 500; font-size: 14px; }

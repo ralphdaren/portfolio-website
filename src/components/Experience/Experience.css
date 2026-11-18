@@ -19,7 +19,7 @@
 .xp__role { font-weight: 600; font-size: 1.25rem; letter-spacing: -0.02em; line-height: 1.25; }
 .xp__where { font-size: 13.5px; color: var(--text-soft); margin: 4px 0 14px; }
 .xp__where a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(47, 75, 124, .35); transition: border-color .2s; }
-.xp__where a:hover { border-bottom-color: currentColor; }
+@media (hover: hover) { .xp__where a:hover { border-bottom-color: currentColor; } }
 .xp__where a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .xp__item ul { list-style: none; display: grid; gap: 8px; margin-bottom: 16px; }
 .xp__item li { position: relative; padding-left: 16px; font-size: 14px; line-height: 1.6; color: var(--text-soft); }

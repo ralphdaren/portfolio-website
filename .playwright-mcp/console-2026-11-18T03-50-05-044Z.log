@@ -1,0 +1,4 @@
+[   11929ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8822/public/images/projects/mjp-beauty.png:1
+[   12836ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8822/public/images/gear/desk.jpg:1
+[   16846ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8822/public/images/experience/mjp-beauty.png:1
+[   16846ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8822/public/images/experience/story-and-wonder.png:1

@@ -7,13 +7,13 @@
 .plist__n { font: 400 12px/2 var(--mono); color: var(--text-soft); grid-row: span 2; }
 .plist b { font-weight: 600; font-size: 1.25rem; letter-spacing: -0.025em; color: #B9B3A8; transition: color .2s; }
 .plist small { font: 400 11.5px var(--mono); color: var(--text-soft); display: flex; align-items: center; gap: 7px; }
-.plist button:hover b { color: var(--text-soft); }
+@media (hover: hover) { .plist button:hover b { color: var(--text-soft); } }
 .plist button[aria-selected="true"] b { color: var(--text); }
 .plist button[aria-selected="true"] .plist__n { color: var(--accent); }
 .status { width: 6px; height: 6px; border-radius: 50%; background: #3E9B63; flex: none; }
 .plist__links { display: flex; gap: 18px; margin-top: 20px; }
 .plink { font: 500 12.5px var(--mono); color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
-.plink:hover { color: var(--text); }
+@media (hover: hover) { .plink:hover { color: var(--text); } }
 
 .viewer { width: var(--frame-w); justify-self: end; }
 .viewer__bar { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin-bottom: 10px; }
